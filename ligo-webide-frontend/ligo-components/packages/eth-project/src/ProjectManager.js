@@ -47,8 +47,8 @@ function makeProjectManager(Base) {
     }
 
     async readPackageJson() {
-      const packageJson = await this.readFile(this.pathForProjectFile('package.json'))
-      return JSON.parse(packageJson)
+      // const packageJson = await this.readFile(this.pathForProjectFile('package.json'))
+      return {} //JSON.parse(packageJson)
     }
 
     async executeInTerminal(cmd) {

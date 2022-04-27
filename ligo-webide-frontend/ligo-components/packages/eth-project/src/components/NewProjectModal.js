@@ -67,9 +67,10 @@ export default class ExtendedNewProjectModal extends NewProjectModal {
       openZeppelinVersion,
     } = this.state
 
-    if (remote) {
-      return super.createProject({ projectRoot, name, template, compilerVersion })
-    }
+    // if (remote) {
+    //   return super.createProject({ projectRoot, name, template, compilerVersion })
+    // }
+    return super.createProject({ projectRoot, name, template, compilerVersion })
 
     const {
       name: compilerName,

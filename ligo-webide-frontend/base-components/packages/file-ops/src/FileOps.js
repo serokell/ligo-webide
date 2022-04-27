@@ -28,6 +28,15 @@ export default class FileOps {
     }
   }
 
+  async exists (filePath) {
+    try {
+      return await this.fs.exists(filePath)
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  }
+
   async ensureDirectory (dirPath) {
     try {
       await this.fs.ensureDir(dirPath)

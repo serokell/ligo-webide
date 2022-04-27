@@ -123,9 +123,9 @@ export default class Workspace extends Component {
     const activeNode = node || this.filetree.current.activeNode || this.filetree.current.rootNode
     const basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
     let baseName = basePath
-    if (platform.isWeb) {
-      baseName = activeNode.children ? activeNode.pathInProject : fileOps.current.path.dirname(activeNode.pathInProject)
-    }
+    // if (platform.isWeb) {
+    //   baseName = activeNode.children ? activeNode.pathInProject : fileOps.current.path.dirname(activeNode.pathInProject)
+    // }
     this.createModal.current.openCreateFileModal({ baseName, basePath })
   }
 
@@ -133,9 +133,9 @@ export default class Workspace extends Component {
     const activeNode = node || this.filetree.current.activeNode || this.filetree.current.rootNode
     const basePath = activeNode.children ? activeNode.path : fileOps.current.path.dirname(activeNode.path)
     let baseName = basePath
-    if (platform.isWeb) {
-      baseName = activeNode.children ? activeNode.pathInProject : fileOps.current.path.dirname(activeNode.pathInProject)
-    }
+    // if (platform.isWeb) {
+    //   baseName = activeNode.children ? activeNode.pathInProject : fileOps.current.path.dirname(activeNode.pathInProject)
+    // }
     this.createModal.current.openCreateFolderModal({ baseName, basePath })
   }
 

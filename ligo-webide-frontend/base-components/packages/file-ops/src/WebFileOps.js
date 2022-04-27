@@ -9,7 +9,7 @@ export default class WebFileOps extends FileOps {
 
     this.electron = {}
 
-    this.homePath = '/'
+    this.homePath = ''
     this.workspace = path.join(this.homePath, process.env.PROJECT_NAME)
   }
 

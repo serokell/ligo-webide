@@ -18,16 +18,16 @@ import ProjectList from './ProjectList'
 
 const userChannel = new HttpIpcChannel('user')
 const projectChannel = new HttpIpcChannel('project')
-const {
-  PROJECT_GITHUB_REPO
-} = process.env
+// const {
+//   PROJECT_GITHUB_REPO
+// } = process.env
 
-const tutorialModalInfo = {
-  header: 'Welcome to Black IDE',
-  description: `Black IDE is a graphic IDE for developing smart contracts on the Ethereum blockchian. New here ? Don't worry.
-  Here is an instruction for a quick scan and details of each features.`,
-  nextPage: `${PROJECT_GITHUB_REPO}/blob/master/README.md`
-}
+// const tutorialModalInfo = {
+//   header: 'Welcome to Black IDE',
+//   description: `Black IDE is a graphic IDE for developing smart contracts on the Ethereum blockchian. New here ? Don't worry.
+//   Here is an instruction for a quick scan and details of each features.`,
+//   nextPage: `${PROJECT_GITHUB_REPO}/blob/master/README.md`
+// }
 
 class UserHomepage extends PureComponent {
   state = {
@@ -45,6 +45,7 @@ class UserHomepage extends PureComponent {
 
   componentDidMount() {
     const { username } = this.props.match.params
+    this.setState({remote: username !== 'local'})
     this.getProjectList(username)
     this.state.remote && this.checkIsNewUser()
   }
@@ -109,9 +110,9 @@ class UserHomepage extends PureComponent {
   }
 
   renderCreateButton = () => {
-    if (!this.isSelf()) {
-      return null
-    }
+    // if (!this.isSelf()) {
+    //   return null
+    // }
     return (
       <Button
         color='success'
@@ -123,9 +124,9 @@ class UserHomepage extends PureComponent {
   }
 
   renderOpenButton = () => {
-    if (!this.isSelf()) {
-      return null
-    }
+    // if (!this.isSelf()) {
+    //   return null
+    // }
     return (
       <Button
         color='success'
@@ -162,7 +163,7 @@ class UserHomepage extends PureComponent {
   }
 
   renderActionButtons = () => {
-    if (platform.isDesktop) {
+    if (true) { // if (platform.isDesktop) {
       if (!this.state.remote) {
         return (
           <ButtonGroup>
@@ -215,11 +216,11 @@ class UserHomepage extends PureComponent {
           />
         </div>
 
-        <TutorialModal
+        {/* <TutorialModal
           ref={this.modal}
           header={tutorialModalInfo.header}
           nextPage={tutorialModalInfo.nextPage}
-          description={tutorialModalInfo.description} />
+          description={tutorialModalInfo.description} /> */}
       </div>
     )
   }

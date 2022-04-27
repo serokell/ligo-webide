@@ -36,3 +36,6 @@ class FileOpsManager {
 }
 
 export default new FileOpsManager()
+
+export { fileSystems, fileSystem } from './filesystems/fileSystem'
+export { IndexedDBStorage, indexedDBFileSystem } from './filesystems/indexedDB'

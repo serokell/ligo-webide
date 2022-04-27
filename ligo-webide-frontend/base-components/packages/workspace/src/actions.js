@@ -20,15 +20,15 @@ export class ProjectActions {
   async newProject (remote) {
     const created = await this.newProjectModal.openModal(remote)
     const { _id, projectRoot, name } = created
-    const author = _id ? Auth.username : 'local'
+    const author = 'local' // _id ? Auth.username : 'local'
     const projectId = _id ? name : Base64.encode(projectRoot)
     redux.dispatch('ADD_PROJECT', {
-      type: _id ? 'remote' : 'local',
+      type: 'local', // _id ? 'remote' : 'local',
       project: {
         id: projectId,
         author,
         name,
-        path: projectRoot,
+        path: projectRoot
       }
     })
     this.history.push(`/${author}/${projectId}`)
@@ -46,7 +46,7 @@ export class ProjectActions {
           id: projectId,
           author,
           path: projectRoot,
-          name: base,
+          name: base
         }
       })
       this.history.push(`/${author}/${projectId}`)
@@ -80,11 +80,11 @@ export class ProjectActions {
       this.history.replace(`/${author}`)
     }
     redux.dispatch('REMOVE_PROJECT', { id })
-    let notificationTitle = 'Remove Project Successful';
-    let notificationDescription = `Project <b>${name}</b> is removed`;
+    let notificationTitle = 'Remove Project Successful'
+    let notificationDescription = `Project <b>${name}</b> is removed`
     if (type == 'delete') {
-      notificationTitle = 'Delete Project Successful';
-      notificationDescription = `You have permanently delete project <b>${name}</b>`;
+      notificationTitle = 'Delete Project Successful'
+      notificationDescription = `You have permanently delete project <b>${name}</b>`
     }
     notification.info(notificationTitle, notificationDescription)
   }

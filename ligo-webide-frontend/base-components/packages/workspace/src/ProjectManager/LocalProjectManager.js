@@ -4,10 +4,86 @@ import { modelSessionManager } from '@obsidians/code-editor'
 
 import BaseProjectManager from './BaseProjectManager'
 import { sortFile } from './helper'
+import { getExamples } from './examples'
 
 export default class LocalProjectManager extends BaseProjectManager {
   static async createProject(options, stage = '') {
-    return await BaseProjectManager.channel.invoke('post', stage, options)
+    const date = new Date()
+    const data = {
+      _id: date.getTime().toString(),
+      userId: date.getTime().toString(),
+      name: date.getTime().toString(),
+      public: false,
+      createdAt: date.getTime().toString(),
+      updatedAt: date.getTime().toString(),
+      projectRoot: '.workspaces/' + date.getTime().toString(),
+      __v: 0
+    }
+
+    const workspaceExists = async (name) => {
+      const workspacePath = '/.workspaces' + '/' + name
+      return await window.remixFileSystem.exists(workspacePath)
+    }
+
+    const createDir = async (path, cb) => {
+      const unprefixedpath = path
+      const paths = unprefixedpath.split('/')
+      if (paths.length && paths[0] === '') paths.shift()
+      let currentCheck = ''
+      for (const value of paths) {
+        currentCheck = currentCheck + '/' + value
+        if (!await window.remixFileSystem.exists(currentCheck)) {
+          try {
+            await window.remixFileSystem.mkdir(currentCheck)
+          } catch (error) {
+            console.log(error)
+          }
+        }
+      }
+      // currentCheck = ''
+      // for (const value of paths) {
+      //   currentCheck = currentCheck + '/' + value
+      //   this.event.emit('folderAdded', this._normalizePath(currentCheck))
+      // }
+      // if (cb) cb()
+    }
+
+    const setF = async (path, content, cb) => {
+      // cb = cb || function () { /* do nothing. */ }
+      // var unprefixedpath = this.removePrefix(path)
+      const exists = await window.remixFileSystem.exists(path)
+      if (exists && await window.remixFileSystem.readFile(path, 'utf8') === content) {
+        return null
+      }
+      await createDir(path.substr(0, path.lastIndexOf('/')))
+      try {
+        await window.remixFileSystem.writeFile(path, content, 'utf8')
+      } catch (e) {
+        return false
+      }
+      return true
+    }
+
+    if (await workspaceExists(data.name)) {
+      throw new Error('workspace already exists')
+    } else {
+      await createDir('.workspaces/' + data.name)
+      // const workspaceProvider = plugin.fileProviders.workspace
+      // await workspaceProvider.createWorkspace(workspaceName)
+    }
+
+    const examples = getExamples(data.name)
+
+    for (const file in examples) {
+      try {
+        await setF(examples[file].name, examples[file].content)
+      } catch (error) {
+        console.error(error)
+      }
+    }
+
+    return data
+    // return await BaseProjectManager.channel.invoke('post', stage, options)
   }
 
   constructor(project, projectRoot) {
@@ -61,16 +137,31 @@ export default class LocalProjectManager extends BaseProjectManager {
   }
 
   async loadRootDirectory() {
-    const rootResult = await BaseProjectManager.channel.invoke('loadTree', this.projectRoot)
-    const isHasFileREADME = rootResult.children.length === 0 ? false : rootResult.children.find(item => item.name === 'README.md')
-    !isHasFileREADME && this.createNewFile(this.projectRoot, 'README.md')
-    rootResult.children = sortFile(rootResult.children)
-    return rootResult
+    const result = await this.listFolder(this.projectRoot)
+
+    const isHasFileREADME = result.length === 0 ? false : result.find(item => item.name === 'README.md')
+    !isHasFileREADME && this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`, 'README.md')
+
+    const rawData = result.map(item => ({ ...item, pathInProject: `${this.projectName}/${item.name}` }))
+    return {
+      name: this.projectRoot,
+      root: true,
+      key: this.projectRoot,
+      title: this.projectRoot,
+      path: this.projectRoot,
+      pathInProject: this.projectRoot,
+      loading: false,
+      children: sortFile(rawData)
+    }
   }
 
   async loadDirectory(node) {
-    const fileNode = await BaseProjectManager.channel.invoke('loadDirectory', node.path)
-    return sortFile(fileNode)
+    const result = await this.listFolder(node.path)
+    const rawData = result.map(item => ({
+      ...item,
+      pathInProject: this.pathInProject(item.path)
+    }))
+    return sortFile(rawData)
   }
 
   async readProjectSettings() {
@@ -127,48 +218,54 @@ export default class LocalProjectManager extends BaseProjectManager {
 
   async createNewFile(basePath, name) {
     const filePath = fileOps.current.path.join(basePath, name)
-    if (await fileOps.current.isFile(filePath)) {
+    if (await fileOps.current.exists(filePath)) {
       throw new Error(`File <b>${filePath}</b> already exists.`)
     }
 
     try {
       await this.ensureFile(filePath)
     } catch (e) {
+      console.log(JSON.stringify(e))
       if (e.code === 'EISDIR') {
         throw new Error(`Folder <b>${filePath}</b> already exists.`)
       } else {
         throw new Error(`Fail to create the file <b>${filePath}</b>.`)
       }
     }
+    await this.refreshDirectory(basePath)
     return filePath
   }
 
   async createNewFolder(basePath, name) {
     const folderPath = fileOps.current.path.join(basePath, name)
-    if (await fileOps.current.isDirectory(folderPath)) {
+    if (await fileOps.current.exists(folderPath)) {
       throw new Error(`Folder <b>${folderPath}</b> already exists.`)
     }
 
     try {
       await fileOps.current.fs.ensureDir(folderPath)
     } catch (e) {
+      console.log(JSON.stringify(e))
       if (e.code === 'EISDIR') {
         throw new Error(`File <b>${folderPath}</b> already exists.`)
       } else {
         throw new Error(`Fail to create the folder <b>${folderPath}</b>.`)
       }
     }
+
+    await this.refreshDirectory(basePath)
   }
 
   async copy(from, to) {
     const { fs } = fileOps.current
     try {
-      await fs.copy(from, to, { overwrite: false, errorOnExist: true });
-      return true;
+      await fs.copy(from, to, { overwrite: false, errorOnExist: true })
+      return true
     } catch (error) {
       return false
     }
   }
+
   async checkExsist (path) {
     const { fs } = fileOps.current
     return !!(await fs.promises.stat(path).catch(() => false))
@@ -184,17 +281,17 @@ export default class LocalProjectManager extends BaseProjectManager {
     const exsist = await this.checkExsist(dest)
 
     try {
-        if (exsist) {
-          const { response } = await fileOps.current.showMessageBox({
-            message: `A file or folder with the name '${fromName}' already exists. Do you want to replace it?`,
-            buttons: ['Replace', 'Cancel']
-          })
-          if (response === 0) {
-            await fs.move(from, dest, { overwrite: true })
-          }
-        } else {
-          await fs.move(from, dest)
+      if (exsist) {
+        const { response } = await fileOps.current.showMessageBox({
+          message: `A file or folder with the name '${fromName}' already exists. Do you want to replace it?`,
+          buttons: ['Replace', 'Cancel']
+        })
+        if (response === 0) {
+          await fs.move(from, dest, { overwrite: true })
         }
+      } else {
+        await fs.move(from, dest)
+      }
     } catch (e) {
       throw new Error(`Fail to move <b>${dest}</b>.`)
     }
@@ -226,9 +323,11 @@ export default class LocalProjectManager extends BaseProjectManager {
       await fs.rename(oldPath, newPath)
       modelSessionManager.updateEditorAfterMovedFile(oldPath, newPath)
     } catch (e) {
+      console.log(e)
       throw new Error(`Fail to rename <b>${oldPath}</b>.`)
     }
 
+    await this.refreshDirectory(dir)
   }
 
   async deleteFile(node) {
@@ -237,8 +336,20 @@ export default class LocalProjectManager extends BaseProjectManager {
       buttons: ['Move to Trash', 'Cancel']
     })
     if (response === 0) {
-      await fileOps.current.deleteFile(node.path)
+      if (node.children) {
+        await fileOps.web.fs.deleteFolder(node.path)
+      } else {
+        await fileOps.web.fs.deleteFile(node.path)
+      }
     }
+
+    const { dir } = fileOps.web.path.parse(node.path)
+    await this.refreshDirectory(dir)
+  }
+
+  async refreshDirectory (dir) {
+    const children = await this.loadDirectory({ path: dir })
+    BaseProjectManager.channel.trigger('refresh-directory', { path: dir, children })
   }
 
   onRefreshFile(data) {

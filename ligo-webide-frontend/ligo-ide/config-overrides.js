@@ -83,6 +83,16 @@ function customSplitting() {
   };
 }
 
+function tsss() {
+  return (config) => {
+    const tsRule = config.module.rules[1].oneOf[2];
+    tsRule.include = undefined;
+    tsRule.exclude = /node_modules/;
+
+    return config;
+  };
+}
+
 const overrides = [
   addWebpackAlias({
     crypto: 'crypto-browserify',
@@ -139,6 +149,7 @@ const overrides = [
     COMMIT_ID: JSON.stringify(process.env.COMMIT_ID),
     BUILD_TIME: JSON.stringify(process.env.BUILD_TIME),
   }),
+  tsss(),
   turnOffMangle(),
   addWasmLoader(),
   customSplitting(),

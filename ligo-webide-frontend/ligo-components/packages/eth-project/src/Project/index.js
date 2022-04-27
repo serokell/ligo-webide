@@ -16,7 +16,7 @@ modelSessionManager.registerCustomTab('settings', ProjectSettingsTab, 'Project S
 modelSessionManager.registerModeDetector(filePath => {
     const { prefix, userId, projectId, settingsFilePath } = modelSessionManager.projectManager
     const { base } = fileOps.current.path.parse(filePath)
-    const settingFilePath = platform.isDesktop ? settingsFilePath : `${prefix}/${userId}/${projectId}/config.json`
+    const settingFilePath = settingsFilePath // platform.isDesktop ? settingsFilePath : `${prefix}/${userId}/${projectId}/config.json`
     const isRoot = settingFilePath === filePath
 
     if (base === 'config.json' && isRoot) {
