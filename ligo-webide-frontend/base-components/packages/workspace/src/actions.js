@@ -10,6 +10,7 @@ export class ProjectActions {
   constructor() {
     this.history = null
     this.newProjectModal = null
+    this.openProjectModal = null
     this.workspace = null
   }
 
@@ -20,15 +21,15 @@ export class ProjectActions {
   async newProject (remote) {
     const created = await this.newProjectModal.openModal(remote)
     const { _id, projectRoot, name } = created
-    const author = _id ? Auth.username : 'local'
+    const author = 'local' // _id ? Auth.username : 'local'
     const projectId = _id ? name : Base64.encode(projectRoot)
     redux.dispatch('ADD_PROJECT', {
-      type: _id ? 'remote' : 'local',
+      type: 'local', // _id ? 'remote' : 'local',
       project: {
         id: projectId,
         author,
         name,
-        path: projectRoot,
+        path: projectRoot
       }
     })
     this.history.push(`/${author}/${projectId}`)
@@ -36,17 +37,17 @@ export class ProjectActions {
 
   async openProject () {
     try {
-      const projectRoot = await fileOps.current.chooseFolder()
-      const { base } = fileOps.current.path.parse(projectRoot)
-      const author = 'local'
-      const projectId = Base64.encode(projectRoot)
+      const created = await this.openProjectModal.openModal()
+      const { _id, projectRoot, name } = created
+      const author = 'local' // _id ? Auth.username : 'local'
+      const projectId = _id ? name : Base64.encode(projectRoot)
       redux.dispatch('ADD_PROJECT', {
         type: 'local',
         project: {
           id: projectId,
           author,
           path: projectRoot,
-          name: base,
+          name
         }
       })
       this.history.push(`/${author}/${projectId}`)
@@ -80,11 +81,11 @@ export class ProjectActions {
       this.history.replace(`/${author}`)
     }
     redux.dispatch('REMOVE_PROJECT', { id })
-    let notificationTitle = 'Remove Project Successful';
-    let notificationDescription = `Project <b>${name}</b> is removed`;
+    let notificationTitle = 'Remove Project Successful'
+    let notificationDescription = `Project <b>${name}</b> is removed`
     if (type == 'delete') {
-      notificationTitle = 'Delete Project Successful';
-      notificationDescription = `You have permanently delete project <b>${name}</b>`;
+      notificationTitle = 'Delete Project Successful'
+      notificationDescription = `You have permanently delete project <b>${name}</b>`
     }
     notification.info(notificationTitle, notificationDescription)
   }

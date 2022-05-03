@@ -3,7 +3,7 @@ import React, { PureComponent } from 'react'
 import redux from '@obsidians/redux'
 import Navbar from '@obsidians/navbar'
 import keypairManager from '@obsidians/keypair'
-import { navbarItem } from '@obsidians/workspace'
+import { navbarItem, OpenProjectModal } from '@obsidians/workspace'
 import { NewProjectModal } from '@obsidians/eth-project'
 import { networkManager } from '@obsidians/eth-network'
 import { utils } from '@obsidians/eth-sdk'
@@ -186,6 +186,7 @@ export default class Header extends PureComponent {
           {logo}
         </Navbar>
         <NewProjectModal createProject={createProject} />
+        <OpenProjectModal createProject={createProject} />
         { AuthModal && <AuthModal /> }
       </>
     )

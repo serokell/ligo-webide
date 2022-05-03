@@ -10,7 +10,7 @@ import {
   Input,
   Button,
   DebouncedFormGroup,
-  DropdownInput,
+  DropdownInput
 } from '@obsidians/ui-components'
 
 import platform from '@obsidians/platform'
@@ -34,7 +34,7 @@ export default class NewProjectModal extends PureComponent {
       template: props.defaultTemplate,
       group: props.defaultGroup,
       creating: false,
-      showTerminal: false,
+      showTerminal: false
     }
 
     this.modal = React.createRef()
@@ -52,7 +52,7 @@ export default class NewProjectModal extends PureComponent {
       template: defaultTemplate,
       group: defaultGroup,
       creating: false,
-      showTerminal: false,
+      showTerminal: false
     })
     this.forceUpdate()
     this.modal.current.openModal()
@@ -74,15 +74,15 @@ export default class NewProjectModal extends PureComponent {
     const { remote, name, template, group } = this.state
 
     let projectRoot
-    if (!remote) {
-      if (!this.state.projectRoot) {
-        projectRoot = this.path.join(fileOps.current.workspace, name)
-      } else if (!this.path.isAbsolute(this.state.projectRoot)) {
-        projectRoot = this.path.join(fileOps.current.workspace, this.state.projectRoot)
-      } else {
-        projectRoot = this.state.projectRoot
-      }
-    }
+    // if (!remote) {
+    //   if (!this.state.projectRoot) {
+    //     projectRoot = this.path.join(fileOps.current.workspace, name)
+    //   } else if (!this.path.isAbsolute(this.state.projectRoot)) {
+    //     projectRoot = this.path.join(fileOps.current.workspace, this.state.projectRoot)
+    //   } else {
+    //     projectRoot = this.state.projectRoot
+    //   }
+    // }
 
     const created = await this.createProject({ projectRoot, name, template, group })
 
@@ -119,7 +119,7 @@ export default class NewProjectModal extends PureComponent {
             className='mb-3'
             options={[
               { key: 'local', text: 'Local', icon: 'fas fa-desktop mr-1' },
-              { key: 'cloud', text: 'Cloud', icon: 'fas fa-cloud mr-1' },
+              { key: 'cloud', text: 'Cloud', icon: 'fas fa-cloud mr-1' }
             ]}
             selected={this.state.remote ? 'cloud' : 'local'}
             onSelect={key => this.setState({ remote: key === 'cloud' })}
@@ -191,16 +191,16 @@ export default class NewProjectModal extends PureComponent {
         pending={creating && 'Creating...'}
         confirmDisabled={!name || invalid}
       >
-        {this.renderLocation()}
-        {this.renderProjectPath()}
+        {/* {this.renderLocation()} */}
+        {/* {this.renderProjectPath()} */}
         <DebouncedFormGroup
           label='Project name'
           value={name}
           onChange={(name, invalid) => this.setState({ name, invalid })}
           {...projectNameProps}
         />
-        {this.renderTemplate()}
-        {this.renderOtherOptions()}
+        {this.renderTemplate(true)}
+        {/* {this.renderOtherOptions()} */}
         <div style={{ display: showTerminal ? 'block' : 'none'}}>
           <Terminal
             ref={this.terminal}

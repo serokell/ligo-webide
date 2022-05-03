@@ -1,32 +1,11 @@
 import path from 'path-browserify'
 import FileOps from './FileOps'
-import AwsS3Fs from './AwsS3Fs'
+import WebLocalFs from './WebLocalFs'
 
-export default class WebFileOps extends FileOps {
+export default class WebLocalFileOps extends FileOps {
   constructor () {
-    const fs = new AwsS3Fs()
+    const fs = new WebLocalFs()
     super(fs, path)
-
-    this.electron = {}
-
-    this.homePath = ''
-    this.workspace = path.join(this.homePath, process.env.PROJECT_NAME)
-  }
-
-  onFocus (handler) {
-    // this.electron.ipcRenderer.on('on-focus', handler)
-  }
-
-  offFocus (handler) {
-    // this.electron.ipcRenderer.on('off-focus', handler)
-  }
-
-  async openNewFile (defaultPath = this.workspace) {
-    // TODO
-  }
-
-  async chooseFolder (defaultPath = this.workspace) {
-    // TODO
   }
 
   async listFolder (folderPath) {
@@ -37,10 +16,6 @@ export default class WebFileOps extends FileOps {
     const result = window.confirm(message)
     return { response: result ? 0 : 1 }
   }
-
-  openItem (filePath) {}
-
-  showItemInFolder (filePath) {}
 
   async createNewFolder (folderPath) {
     try {
@@ -58,10 +33,11 @@ export default class WebFileOps extends FileOps {
     window.open(href, '_blank')
   }
 
-  openInTerminal (filePath) {
-  }
-
   deleteFile (filePath) {
     return this.fs.deleteFile(filePath)
+  }
+
+  deleteFolder (filePath) {
+    return this.fs.deleteFolder(filePath)
   }
 }

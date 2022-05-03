@@ -120,7 +120,7 @@ export class CompilerManager {
           await projectManager.saveFile(contractJsonPath, contractJson)
         }
       }
-      projectManager.refreshDirectory()
+      projectManager.refreshDirectory(projectManager.pathForProjectFile(''))
       projectManager.refreshDirectory(projectManager.pathForProjectFile('build/contracts'))
     }
     const errorDecorations = []
@@ -151,9 +151,9 @@ export class CompilerManager {
   }
 
   async build(settings, projectManager, sourceFile) {
-    if (projectManager.remote) {
-      return await this.buildBySolcjs(projectManager)
-    }
+    // if (projectManager.remote) {
+    return await this.buildBySolcjs(projectManager)
+    // }
 
     const { framework, compilers = {} } = settings
 

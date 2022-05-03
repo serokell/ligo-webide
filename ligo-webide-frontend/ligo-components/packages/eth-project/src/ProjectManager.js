@@ -47,8 +47,8 @@ function makeProjectManager(Base) {
     }
 
     async readPackageJson() {
-      const packageJson = await this.readFile(this.pathForProjectFile('package.json'))
-      return JSON.parse(packageJson)
+      // const packageJson = await this.readFile(this.pathForProjectFile('package.json'))
+      return {} //JSON.parse(packageJson)
     }
 
     async executeInTerminal(cmd) {
@@ -169,7 +169,7 @@ function makeProjectManager(Base) {
     async readProjectAbis() {
       const contracts = await this.getBuiltContracts()
       const abis = await Promise.all(contracts
-        .map(contract => this.readFile(contract.path, 'utf8')
+        .map(contract => this.readFile(contract.path)
           .then(content => ({
             contractPath: contract.path,
             pathInProject: this.pathInProject(contract.path),

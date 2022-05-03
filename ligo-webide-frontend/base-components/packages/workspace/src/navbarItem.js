@@ -20,7 +20,7 @@ const projectContextMenus = id => {
         if (result) {
           !result.exsist && actions.removeProject(project)
         }
-      },
+      }
     },
     {
       text: `Open in Terminal`,
@@ -29,27 +29,27 @@ const projectContextMenus = id => {
         if (result) {
           !result.exsist && actions.removeProject(project)
         }
-      },
+      }
     },
     null,
     {
       text: `Remove`,
-      onClick: project => actions.removeProject(project),
-    },
+      onClick: project => actions.removeProject(project)
+    }
   ]
 }
 
 export default function navbarItem(projects, selected, username = 'local') {
-  if (platform.isWeb && username === 'local') {
-    return {
-      route: 'local',
-      title: 'Project',
-      icon: 'fas fa-file-code',
-      selected,
-      dropdown: [{ none: true }],
-      contextMenu: projectContextMenus,
-    }
-  }
+  // if (platform.isWeb && username === 'local') {
+  //   return {
+  //     route: 'local',
+  //     title: 'Project',
+  //     icon: 'fas fa-file-code',
+  //     selected,
+  //     dropdown: [{ none: true }],
+  //     contextMenu: projectContextMenus
+  //   }
+  // }
 
   const localProjects = projects.get('local')?.toJS() || []
   const remoteProjects = projects.get('remote')?.toJS() || []
@@ -57,7 +57,7 @@ export default function navbarItem(projects, selected, username = 'local') {
   if (platform.isDesktop) {
     projectDropdown = [
       { divider: true },
-      { header: username === 'local' ? 'projects' : 'local projects' },
+      { header: username === 'local' ? 'projects' : 'local projects' }
     ]
     if (localProjects.length) {
       projectDropdown = projectDropdown.concat(localProjects.map(p => ({ ...p, route: p.author })))
@@ -68,7 +68,7 @@ export default function navbarItem(projects, selected, username = 'local') {
     if (username !== 'local') {
       projectDropdown = projectDropdown.concat([
         { divider: true },
-        { header: 'remote projects' },
+        { header: 'remote projects' }
       ])
       if (remoteProjects.length) {
         projectDropdown = projectDropdown.concat(remoteProjects.map(p => ({ ...p, route: p.author })))
@@ -79,28 +79,26 @@ export default function navbarItem(projects, selected, username = 'local') {
   } else {
     projectDropdown = [
       { divider: true },
-      { header: 'projects' },
+      { header: 'projects' }
     ]
-    if (remoteProjects.length) {
-      projectDropdown = projectDropdown.concat(remoteProjects.map(p => ({ ...p, route: p.author })))
+    if (localProjects.length) {
+      projectDropdown = projectDropdown.concat(localProjects.map(p => ({ ...p, route: p.author })))
     } else {
       projectDropdown.push({ none: true })
     }
   }
 
-  if (platform.isDesktop) {
-    projectDropdown.unshift({
-      id: 'open-project',
-      name: 'Open Project...',
-      icon: 'fas fa-folder-plus',
-      onClick: () => actions.openProject(),
-    })
-  }
+  projectDropdown.unshift({
+    id: 'open-project',
+    name: 'Open Project...',
+    icon: 'fas fa-folder-plus',
+    onClick: () => actions.openProject()
+  })
   projectDropdown.unshift({
     id: 'new-project',
     name: 'Create Project...',
     icon: 'fas fa-plus',
-    onClick: () => actions.newProject(platform.isWeb),
+    onClick: () => actions.newProject(platform.isWeb)
   })
 
   return {
@@ -109,6 +107,6 @@ export default function navbarItem(projects, selected, username = 'local') {
     icon: 'fas fa-file-code',
     selected,
     dropdown: projectDropdown,
-    contextMenu: projectContextMenus,
+    contextMenu: projectContextMenus
   }
 }

@@ -1,5 +1,6 @@
 import ElectronFileOps from './ElectronFileOps'
 import WebFileOps from './WebFileOps'
+import WebLocalFileOps from './WebLocalFileOps'
 
 class FileOpsManager {
   constructor () {
@@ -15,11 +16,13 @@ class FileOpsManager {
       return
     } else if (fsType === 'web') {
       this._fsType = fsType
-      this._fileOps = this.web
+      // this._fileOps = this.web TODO replace or remove web file ops
+      this._fileOps = new WebLocalFileOps()
       return
     }
     throw new Error(`Unknown fsType "${this.fsType}".`)
   }
+
   get fsType () {
     return this._fsType
   }
@@ -36,3 +39,6 @@ class FileOpsManager {
 }
 
 export default new FileOpsManager()
+
+export { fileSystems, fileSystem } from './filesystems/fileSystem'
+export { IndexedDBStorage, indexedDBFileSystem } from './filesystems/indexedDB'

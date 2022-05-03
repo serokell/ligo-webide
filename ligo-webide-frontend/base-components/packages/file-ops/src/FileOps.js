@@ -4,6 +4,20 @@ export default class FileOps {
     this.path = path
   }
 
+  onFocus (handler) {}
+
+  offFocus (handler) {}
+
+  async openNewFile (defaultPath = this.workspace) {}
+
+  async chooseFolder (defaultPath = this.workspace) {}
+
+  openItem (filePath) {}
+
+  showItemInFolder (filePath) {}
+
+  openInTerminal (filePath) {}
+
   async isDirectory (dirPath) {
     try {
       return (await this.fs.promises.stat(dirPath)).isDirectory()
@@ -28,6 +42,15 @@ export default class FileOps {
     }
   }
 
+  async exists (filePath) {
+    try {
+      return await this.fs.exists(filePath)
+    } catch (e) {
+      console.log(e)
+      return false
+    }
+  }
+
   async ensureDirectory (dirPath) {
     try {
       await this.fs.ensureDir(dirPath)
@@ -48,8 +71,8 @@ export default class FileOps {
     }
   }
 
-  async readFile (filePath, encoding = 'utf8') {
-    return this.fs.promises.readFile(filePath, { encoding })
+  async readFile (filePath, cb) {
+    return this.fs.promises.readFile(filePath, cb)
   }
 
   async writeFile (filePath, content) {

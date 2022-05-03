@@ -20,7 +20,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     this.remote = true
     this.prefix = 'private'
     if (this.projectRoot) {
-      const projectOwner = this.projectRoot.split("/")[0]
+      const projectOwner = this.projectRoot.split('/')[0]
       this.projectOwner = projectOwner
       this.userOwnProject = Auth.profile.username === projectOwner
       this.isFirstLoad = true
@@ -31,7 +31,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
     if (aim === 'public') this.prefix = 'public'
     if (aim === 'private') this.prefix = 'private'
     const project = await projectChannel.invoke('put', `${this.projectOwner}/${this.projectName}`, {
-      public: this.prefix === 'public',
+      public: this.prefix === 'public'
     })
     this.refreshDirectory()
     // await toggleFunction //
@@ -91,9 +91,9 @@ export default class RemoteProjectManager extends BaseProjectManager {
   async loadRootDirectory() {
     const result = await this.listFolder(`${this.prefix}/${this.userId}/${this.projectId}`)
     if (this.isFirstLoad) {
-      this.isFirstLoad = false;
-      const isHasFileREADME = result.length == 0? false : result.find(item => item.name == 'README.md');
-      !isHasFileREADME && this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`,'README.md');
+      this.isFirstLoad = false
+      const isHasFileREADME = result.length == 0 ? false : result.find(item => item.name == 'README.md')
+      !isHasFileREADME && this.createNewFile(`${this.prefix}/${this.userId}/${this.projectId}`, 'README.md')
     }
 
     const rawData = result.map(item => ({ ...item, pathInProject: `${this.projectName}/${item.name}` }))
@@ -157,7 +157,7 @@ export default class RemoteProjectManager extends BaseProjectManager {
   async readFile (filePath) {
     return await fileOps.web.readFile(filePath)
   }
-  
+
   async saveFile (filePath, content) {
     if (!this.userOwnProject) throw new Error('This Project Is Readonly!')
     await fileOps.web.writeFile(filePath, content)
@@ -182,7 +182,6 @@ export default class RemoteProjectManager extends BaseProjectManager {
   }
 
   async createNewFolder (basePath, name) {
-
     const folderPath = this.path.join(basePath, name)
 
     try {
