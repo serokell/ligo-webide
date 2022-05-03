@@ -60,7 +60,7 @@ export class CompilerManager {
       await cacheStorage.delete(url)
     }
 
-    this.notification = notification.info(`Downloading Solc Bin`, `Downloading <b>${version}</b>...`, 0)
+    this.notification = notification.info(`Downloadin Solc Bin`, `Downloading <b>${version}</b>...`, 0)
     const request = new Request(url, { mode: 'no-cors' })
     const response = await fetch(request)
     await cacheStorage.put(url, response)
@@ -83,71 +83,40 @@ export class CompilerManager {
     const optimizer = projectManager.projectSettings.get('compilers.optimizer')
 
     CompilerManager.button.setState({ building: true })
-    try {
-      await this.cacheSolcBin(solcUrl, solcFileName)
-    } catch (e) {
-      console.error(e)
-      CompilerManager.button.setState({ building: false })
-      throw e
-    }
 
-    CompilerManager.terminal.writeCmdToTerminal(`solcjs --bin ${projectManager.projectSettings.get('main')}`, `[${solcFileName}]`)
+    CompilerManager.terminal.writeCmdToTerminal(`ligo compile contract input.mligo`)
     this.notification = notification.info(`Building Project`, `Building...`, 0)
 
-    let output
+    const mainFilePath = projectManager.projectSettings.get('main')
+
+    let mainFileContent
     try {
-      output = await this.solcjsCompiler.compile(solcUrl, projectManager)
+      mainFileContent = await projectManager.readFile(projectManager.mainFilePath)
+      console.log("mainFileContent: ");
+      console.log(mainFileContent);
     } catch (e) {
-      this.notification.dismiss()
-      notification.error('Build Failed', e.message)
-      CompilerManager.button.setState({ building: false })
-      throw e
+      console.warn(e)
+      throw new Error(`Cannot read the main file <b>${mainFilePath}</b>.`)
     }
 
-    if (!output) {
-      this.notification.dismiss()
-      notification.error('Build Failed', ``)
-      CompilerManager.button.setState({ building: false })
-      throw new Error('Build Failed.')
-    }
-
-    if (output.contracts) {
-      for (const file in output.contracts) {
-        for (const contractName in output.contracts[file]) {
-          const json = output.contracts[file][contractName]
-          const contractJsonPath = projectManager.pathForProjectFile(`build/contracts/${contractName}.json`)
-          const contractJson = JSON.stringify(json, null, 2)
-          await projectManager.saveFile(contractJsonPath, contractJson)
-        }
-      }
-      projectManager.refreshDirectory(projectManager.pathForProjectFile(''))
-      projectManager.refreshDirectory(projectManager.pathForProjectFile('build/contracts'))
-    }
-    const errorDecorations = []
-    let hasError = false
-
-    output.errors?.forEach(error => {
-      let color
-      if (error.severity === 'error') {
-        hasError = true
-        color = '--color-danger'
-        errorDecorations.push(this.parseSolcJSBuild(error))
-      } else if (error.severity === 'warning') {
-        color = '--color-warning'
-      }
-      CompilerManager.terminal.writeToTerminal(error.type, color)
-      CompilerManager.terminal.writeToTerminal(`${error.formattedMessage.replace(error.type, '').replace(/\n/g, '\n\r')}`)
-    })
+    const request = new Request("http://localhost:8080/compile",
+           { method: "POST"
+           , headers:
+               { 'Accept': 'application/json'
+               , 'Content-Type': 'application/json'
+               }
+           , body: JSON.stringify(mainFileContent)
+           })
+    fetch(request)
+      .then(function(response) {
+        return response.json();
+      }).then(function(data) {
+        console.log(data);
+        CompilerManager.terminal.writeToTerminal(data.replace(/\n/g, '\n\r'));
+      });
 
     this.notification.dismiss()
     CompilerManager.button.setState({ building: false })
-    if (hasError) {
-      notification.error('Build Failed', `Code has errors.`)
-      modelSessionManager.updateDecorations(errorDecorations)
-    } else {
-      notification.success('Build Successful', `The smart contract is built.`)
-      modelSessionManager.clearDecoration('compiler')
-    }
   }
 
   async build(settings, projectManager, sourceFile) {
