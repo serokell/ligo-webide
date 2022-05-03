@@ -1,4 +1,4 @@
-module Main where
+module Main (main) where
 
 import Control.Monad (join)
 import Lib
@@ -15,11 +15,24 @@ main =
       )
   where
     parser :: Parser (IO ())
-    parser =
-      startApp . Config
+    parser = fmap startApp $
+      Config
         <$> strOption
           ( long "ligo-path"
-              <> short 'l'
-              <> metavar "STRING"
-              <> help "string parameter"
+            <> short 'l'
+            <> metavar "STRING"
+            <> help "path to LIGO binary"
+          )
+        <*> option auto
+          ( long "port"
+            <> short 'p'
+            <> metavar "INT"
+            <> showDefault
+            <> value 8080
+            <> help "port the server should use"
+          )
+        <*> switch
+          ( long "verbose"
+            <> short 'v'
+            <> help "print received requests and the responses"
           )

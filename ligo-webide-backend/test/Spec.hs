@@ -14,15 +14,18 @@ import Network.HTTP.Types.Method (methodPost)
 import Network.Wai.Test (SResponse, simpleBody)
 import System.Environment (lookupEnv)
 import Test.Hspec
-import Test.Hspec.Expectations (shouldBe)
 import Test.Hspec.Wai (WaiSession, request, with)
-import Test.Hspec.Wai.JSON
 
 main :: IO ()
 main = do
   ligoPath <- fromMaybe (error "need to set LIGO_PATH") 
            <$> lookupEnv "LIGO_PATH"
-  hspec (spec (Config ligoPath))
+  let config = Config
+        { cLigoPath = ligoPath
+        , cPort = 8080
+        , cVerbose = False
+        }
+  hspec (spec config)
 
 post :: BS.ByteString -> LBS.ByteString -> WaiSession () SResponse
 post path =
