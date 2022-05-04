@@ -93,10 +93,6 @@ export class CompilerManager {
     try {
       mainFileExtension = projectManager.mainFilePath.split('.').pop();
       mainFileContent = await projectManager.readFile(projectManager.mainFilePath)
-      console.log("mainFileExtension: ");
-      console.log(mainFileExtension);
-      console.log("mainFileContent: ");
-      console.log(mainFileContent);
     } catch (e) {
       console.warn(e)
       throw new Error(`Cannot read the main file <b>${mainFilePath}</b>.`)
@@ -118,8 +114,19 @@ export class CompilerManager {
       .then(function(response) {
         return response.json();
       }).then(function(data) {
-        console.log(data);
         CompilerManager.terminal.writeToTerminal(data.replace(/\n/g, '\n\r'));
+
+        // Write output to file
+        if (!projectManager.checkExsist(projectManager.projectRoot + "/build")) {
+          projectManager.createNewFolder(projectManager.projectRoot, "build");
+        }
+        let buildPath = projectManager.projectRoot
+              + "/build"
+              + projectManager.mainFilePath.replace(projectManager.projectRoot, "");
+        let amendedBuildPath = buildPath.replace(/\.[^/.]+$/, ".tz");
+        projectManager.saveFile(amendedBuildPath, data);
+
+        CompilerManager.terminal.writeToTerminal("\nwrote output to " + amendedBuildPath);
       });
 
     this.notification.dismiss()
