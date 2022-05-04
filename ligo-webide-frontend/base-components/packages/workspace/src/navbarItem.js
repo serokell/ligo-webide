@@ -98,7 +98,7 @@ export default function navbarItem(projects, selected, username = 'local') {
     id: 'new-project',
     name: 'Create Project...',
     icon: 'fas fa-plus',
-    onClick: () => actions.newProject(platform.isWeb)
+    onClick: () => actions.newProject(false)
   })
 
   return {

@@ -4,13 +4,13 @@ import CacheRoute from 'react-router-cache-route'
 import { connect } from '@obsidians/redux'
 
 import Auth from '@obsidians/auth'
-import { KeypairButton } from '@obsidians/keypair'
+// import { KeypairButton } from '@obsidians/keypair'
 import { TerminalButton } from '@obsidians/workspace'
 
-import { NetworkStatus } from '@obsidians/eth-network'
-import { QueueButton } from '@obsidians/eth-queue'
-import { AbiStorage } from '@obsidians/eth-contract'
-import { CompilerSelectors } from '@obsidians/compiler'
+// import { NetworkStatus } from '@obsidians/eth-network'
+// import { QueueButton } from '@obsidians/eth-queue'
+// import { AbiStorage } from '@obsidians/eth-contract'
+// import { CompilerSelectors } from '@obsidians/compiler'
 
 export default connect(['network', 'queue', 'projects', 'uiState'])(function BottomBar (props) {
   const {
@@ -19,11 +19,11 @@ export default connect(['network', 'queue', 'projects', 'uiState'])(function Bot
     projects,
     uiState,
 
-    mnemonic = true,
-    secretName = mnemonic ? 'Private Key / Mnemonic' : 'Private Key',
-    chains,
+    // mnemonic = true,
+    // secretName = mnemonic ? 'Private Key / Mnemonic' : 'Private Key',
+    // chains,
 
-    noNetwork,
+    // noNetwork,
   } = props
 
   const localNetwork = uiState.get('localNetwork')
@@ -39,10 +39,10 @@ export default connect(['network', 'queue', 'projects', 'uiState'])(function Bot
   let projectButtons
   if (loaded) {
     projectButtons = <>
-      <CacheRoute
+      {/* <CacheRoute
         path={[`/${Auth.username}/:project`, '/local/:project']}
         render={() => <CompilerSelectors author={selectedProject.get('author')} />}
-      />
+      /> */}
       <CacheRoute
         path={[`/${Auth.username}/:project`, '/local/:project']}
         component={TerminalButton}
@@ -51,7 +51,7 @@ export default connect(['network', 'queue', 'projects', 'uiState'])(function Bot
   }
 
   return <>
-    <KeypairButton mnemonic={mnemonic} secretName={secretName} chains={chains}>
+    {/* <KeypairButton mnemonic={mnemonic} secretName={secretName} chains={chains}>
       <div className='btn btn-primary btn-sm btn-flat'>
         <i className='fas fa-key' />
       </div>
@@ -63,7 +63,7 @@ export default connect(['network', 'queue', 'projects', 'uiState'])(function Bot
         <i className='fas fa-list mr-1' />
         ABI Storage
       </div>
-    </AbiStorage>
+    </AbiStorage> */}
     <div className='flex-1' />
     {projectButtons}
   </>

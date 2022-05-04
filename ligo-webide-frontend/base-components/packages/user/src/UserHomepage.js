@@ -13,7 +13,7 @@ import platform from '@obsidians/platform'
 import redux, { connect } from '@obsidians/redux'
 import { HttpIpcChannel } from '@obsidians/ipc'
 import { actions, TutorialModal } from '@obsidians/workspace'
-import UserProfile from './UserProfile'
+// import UserProfile from './UserProfile'
 import ProjectList from './ProjectList'
 
 const userChannel = new HttpIpcChannel('user')
@@ -59,7 +59,7 @@ class UserHomepage extends PureComponent {
   }
 
   checkIsNewUser() {
-    if (!localStorage.getItem('hasMark') && this.isSelf() && this.props.enableTutorial) {
+    if (!localStorage.getItem('hasMark') && this.isSelf() && false) {
       localStorage.setItem('hasMark', 'true')
       this.modal.current.showModal()
     }
@@ -204,7 +204,7 @@ class UserHomepage extends PureComponent {
     return (
       <div className='d-flex w-100 h-100' style={{ overflow: 'auto' }}>
         <div className='container py-5'>
-          <UserProfile profile={this.isSelf() ? profile.toJS() : user} />
+          {/* <UserProfile profile={this.isSelf() ? profile.toJS() : user} /> */}
           <div className='d-flex flex-row justify-content-between my-3'>
             {this.renderProjectListOptions()}
             {this.renderActionButtons()}
@@ -232,9 +232,9 @@ export {
 }
 
 UserHomepage.propTypes = {
-  enableTutorial: PropTypes.boolean
+  // enableTutorial: PropTypes.boolean
 }
 
 UserHomepage.defaultProps = {
-  enableTutorial: false
+  // enableTutorial: false
 }

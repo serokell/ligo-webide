@@ -244,28 +244,13 @@ export default class ExtendedNewProjectModal extends NewProjectModal {
 
 const templates = [
   { id: 'empty', display: 'Empty Project' },
-  { id: 'coin', display: 'Coin' },
-  { id: 'erc20', display: 'ERC20 Token' },
-  {
-    group: 'open zeppelin',
-    badge: 'Open Zeppelin',
-    local: true,
-    children: [
-      { id: 'openzeppelin', display: 'Basics - ERC20, ERC721 & ERC1155 (v3.1+)' },
-    ],
-  },
-  {
-    group: `${process.env.COMPILER_NAME}`,
-    badge: `${process.env.COMPILER_NAME}`,
-    local: true,
-    children: [
-      { id: 'metacoin', display: 'Metacoin' },
-    ],
-  }
+  { id: 'increment', display: 'Increment' },
+  { id: 'id', display: 'ID' },
+  { id: 'hashlock', display: 'Hashlock Contract' },
 ]
 
 ExtendedNewProjectModal.defaultProps = {
-  defaultTemplate: 'coin',
+  defaultTemplate: 'increment',
   defaultFramework: 'truffle',
   templates,
   FrameworkSelector,

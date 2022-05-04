@@ -3,7 +3,7 @@ import { connect } from '@obsidians/redux';
 import { networkManager } from '@obsidians/network';
 
 BaseUserHomepage.defaultProps = {
-  enableTutorial: true,
+  enableTutorial: false,
 };
 
 class UserHomepage extends BaseUserHomepage {

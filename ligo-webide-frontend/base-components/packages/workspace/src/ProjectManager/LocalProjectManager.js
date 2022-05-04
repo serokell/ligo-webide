@@ -72,7 +72,7 @@ export default class LocalProjectManager extends BaseProjectManager {
       // await workspaceProvider.createWorkspace(workspaceName)
     }
 
-    const examples = getExamples(data.name)
+    const examples = getExamples(data.name, options.template)
 
     for (const file in examples) {
       try {

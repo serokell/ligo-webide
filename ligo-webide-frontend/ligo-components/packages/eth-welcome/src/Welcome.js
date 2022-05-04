@@ -123,7 +123,7 @@ export default class Welcome extends PureComponent {
         <div className='jumbotron jumbotron-fluid'>
           <div className='container'>
             <h4 className='display-4'>{`Welcome to ${process.env.PROJECT_NAME}`}</h4>
-            { this.props.enableTutorial ? this.tutorialBar() : null }
+            { false ? this.tutorialBar() : null }
             <div className='my-3' />
 
             <ListGroup>

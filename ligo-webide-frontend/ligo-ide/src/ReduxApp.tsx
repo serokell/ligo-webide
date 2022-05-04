@@ -2,7 +2,7 @@ import '@/menu';
 
 import { GlobalModals, autoUpdater } from '@obsidians/global';
 import React, { Suspense, lazy, useState, useEffect, useRef } from 'react';
-import Welcome, { checkDependencies } from '@obsidians/welcome';
+// import Welcome, { checkDependencies } from '@obsidians/welcome';
 import { config, updateStore } from '@/redux';
 import redux, { Provider } from '@obsidians/redux';
 
@@ -19,20 +19,20 @@ const Header = lazy(() =>
 
 const ReduxApp = (props) => {
   const [loaded, setLoaded] = useState(false)
-  const [dependencies, setDependencies] = useState(false)
+  // const [dependencies, setDependencies] = useState(false)
   const remixFileSystems = useRef<fileSystems>(new fileSystems())
   const remixIndexedDB = useRef<fileSystem>(new indexedDBFileSystem())
 
   const refresh = async () => {
-    const dependencies = await checkDependencies();
+    // const dependencies = await checkDependencies();
     setLoaded(true)
-    setDependencies(dependencies)
+    // setDependencies(dependencies)
     autoUpdater.check();
   };
 
   const skip = () => {
     setLoaded(true)
-    setDependencies(true)
+    // setDependencies(true)
   };
 
   useEffect(() => {
@@ -49,25 +49,25 @@ const ReduxApp = (props) => {
     return <LoadingScreen />;
   }
 
-  if (!dependencies) {
-    return (
-      <Suspense fallback={<LoadingScreen />}>
-        <Welcome
-          isReady={checkDependencies}
-          onGetStarted={skip}
-          truffleSubtitle={`The library used to create and compile a project.`}
-          enableTutorial={false}
-        />
-        <NotificationSystem />
-        <GlobalModals icon={icon} />
-      </Suspense>
-    );
-  }
+  // if (!dependencies) {
+  //   return (
+  //     <Suspense fallback={<LoadingScreen />}>
+  //       {/* <Welcome
+  //         isReady={checkDependencies}
+  //         onGetStarted={skip}
+  //         truffleSubtitle={`The library used to create and compile a project.`}
+  //         enableTutorial={false}
+  //       /> */}
+  //       <NotificationSystem />
+  //       <GlobalModals icon={icon} />
+  //     </Suspense>
+  //   );
+  // }
   return (
     <Provider store={redux.store}>
       <div
         className="body"
-        style={{ paddingTop: dependencies ? '49px' : '0' }}
+        style={{ paddingTop: true ? '49px' : '0' }}
       >
         <Routes>
           <Header history={props.history} />

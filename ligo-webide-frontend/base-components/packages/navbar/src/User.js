@@ -9,7 +9,7 @@ import {
 
 import { withRouter } from 'react-router'
 
-import fileOps from '@obsidians/file-ops'
+// import fileOps from '@obsidians/file-ops'
 import platform from '@obsidians/platform'
 import Auth from '@obsidians/auth'
 
@@ -59,50 +59,50 @@ class User extends Component {
     let dropdownItems = []
 
     const {
-      ENABLE_AUTH,
-      PROJECT_NAME,
-      PROJECT_WEB_URL,
-      PROJECT_DESKTOP_URL,
-      PROJECT_GITHUB_REPO,
-      REACT_APP_HELP_PAGE
+      ENABLE_AUTH
+      // PROJECT_NAME,
+      // PROJECT_WEB_URL,
+      // PROJECT_DESKTOP_URL,
+      // PROJECT_GITHUB_REPO,
+      // REACT_APP_HELP_PAGE
     } = process.env
-  
-    const enableHelpPage = REACT_APP_HELP_PAGE && REACT_APP_HELP_PAGE === 'true'
+
+    // const enableHelpPage = REACT_APP_HELP_PAGE && REACT_APP_HELP_PAGE === 'true'
     let linkToOtherPlatformItem = []
-    if (platform.isDesktop) {
-      if (PROJECT_WEB_URL) {
-        linkToOtherPlatformItem = [
-          <DropdownItem key='divider2' divider />,
-          <DropdownItem key='project-web-url' onClick={() => fileOps.current.openLink(PROJECT_WEB_URL)}>
-            <i className='fas fa-columns w-3 mr-2' />{PROJECT_NAME} Web
-          </DropdownItem>
-        ]
-      }
-    } else if (PROJECT_DESKTOP_URL) {
-      linkToOtherPlatformItem = [
-        <DropdownItem key='divider2' divider />,
-        <DropdownItem key='project-desktop-url' onClick={() => fileOps.current.openLink(`${PROJECT_DESKTOP_URL}/${platform.os}`)}>
-          <i className='fas fa-download w-3 mr-2' />Desktop App
-        </DropdownItem>
-      ]
-    }
-    if (PROJECT_GITHUB_REPO) {
-      linkToOtherPlatformItem.push(
-        <DropdownItem key='github-repo' onClick={() => fileOps.current.openLink(PROJECT_GITHUB_REPO)}>
-          <i className='fab fa-github w-3 mr-2' />GitHub Repo
-        </DropdownItem>
-      )
-      linkToOtherPlatformItem.push(
-        <DropdownItem key='report-issue' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/issues/new`)}>
-          <i className='fas fa-question-circle w-3 mr-2' />Report an Issue
-        </DropdownItem>
-      )
-      enableHelpPage && linkToOtherPlatformItem.push(
-        <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/blob/master/README.md`)}>
-          <i className='fas fa-info-circle w-3 mr-2' />Help page
-          </DropdownItem>
-        )
-    }
+    // if (platform.isDesktop) {
+    //   if (PROJECT_WEB_URL) {
+    //     linkToOtherPlatformItem = [
+    //       <DropdownItem key='divider2' divider />,
+    //       <DropdownItem key='project-web-url' onClick={() => fileOps.current.openLink(PROJECT_WEB_URL)}>
+    //         <i className='fas fa-columns w-3 mr-2' />{PROJECT_NAME} Web
+    //       </DropdownItem>
+    //     ]
+    //   }
+    // } else if (PROJECT_DESKTOP_URL) {
+    //   linkToOtherPlatformItem = [
+    //     <DropdownItem key='divider2' divider />,
+    //     <DropdownItem key='project-desktop-url' onClick={() => fileOps.current.openLink(`${PROJECT_DESKTOP_URL}/${platform.os}`)}>
+    //       <i className='fas fa-download w-3 mr-2' />Desktop App
+    //     </DropdownItem>
+    //   ]
+    // }
+    // if (PROJECT_GITHUB_REPO) {
+    //   linkToOtherPlatformItem.push(
+    //     <DropdownItem key='github-repo' onClick={() => fileOps.current.openLink(PROJECT_GITHUB_REPO)}>
+    //       <i className='fab fa-github w-3 mr-2' />GitHub Repo
+    //     </DropdownItem>
+    //   )
+    //   linkToOtherPlatformItem.push(
+    //     <DropdownItem key='report-issue' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/issues/new`)}>
+    //       <i className='fas fa-question-circle w-3 mr-2' />Report an Issue
+    //     </DropdownItem>
+    //   )
+    //   enableHelpPage && linkToOtherPlatformItem.push(
+    //     <DropdownItem key='help-page' onClick={() => fileOps.current.openLink(`${PROJECT_GITHUB_REPO}/blob/master/README.md`)}>
+    //       <i className='fas fa-info-circle w-3 mr-2' />Help page
+    //       </DropdownItem>
+    //     )
+    // }
 
     const username = profile.get('username')
     if (platform.isDesktop && !ENABLE_AUTH) {
@@ -128,7 +128,7 @@ class User extends Component {
       ]
     } else {
       dropdownItems = [
-        ...this.renderLoginButton(),
+        // ...this.renderLoginButton(),
         <DropdownItem key='divider-2' divider />,
         <DropdownItem key='my-projects' onClick={() => this.props.history.push(`/local`)}>
           <i className='fas fa-th-list w-3 mr-2' />My Projects
