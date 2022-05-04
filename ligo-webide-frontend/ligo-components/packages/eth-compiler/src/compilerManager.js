@@ -84,20 +84,24 @@ export class CompilerManager {
 
     CompilerManager.button.setState({ building: true })
 
-    CompilerManager.terminal.writeCmdToTerminal(`ligo compile contract input.mligo`)
     this.notification = notification.info(`Building Project`, `Building...`, 0)
 
     const mainFilePath = projectManager.projectSettings.get('main')
 
+    let mainFileExtension
     let mainFileContent
     try {
+      mainFileExtension = projectManager.mainFilePath.split('.').pop();
       mainFileContent = await projectManager.readFile(projectManager.mainFilePath)
+      console.log("mainFileExtension: ");
+      console.log(mainFileExtension);
       console.log("mainFileContent: ");
       console.log(mainFileContent);
     } catch (e) {
       console.warn(e)
       throw new Error(`Cannot read the main file <b>${mainFilePath}</b>.`)
     }
+    CompilerManager.terminal.writeCmdToTerminal("ligo compile contract " + projectManager.mainFilePath)
 
     const request = new Request("http://localhost:8080/compile",
            { method: "POST"
@@ -105,7 +109,10 @@ export class CompilerManager {
                { 'Accept': 'application/json'
                , 'Content-Type': 'application/json'
                }
-           , body: JSON.stringify(mainFileContent)
+           , body: JSON.stringify(
+               { 'fileExtension': mainFileExtension
+               , 'source': mainFileContent
+               })
            })
     fetch(request)
       .then(function(response) {

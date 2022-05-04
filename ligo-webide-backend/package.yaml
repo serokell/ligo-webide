@@ -63,6 +63,8 @@ ghc-options:
 library:
   source-dirs: src
   dependencies:
+  - aeson
+  - bytestring
   - katip
   - mtl
   - process
