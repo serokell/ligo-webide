@@ -60,7 +60,6 @@
             systemd.services.ligo-webide = {
               after = [ "network.target" ];
               wantedBy = [ "multi-user.target" ];
-
               script =
                 ''
                   ${req.backend}/bin/ligo-webide-backend --ligo-path ${req.ligo-bin}/bin/ligo
@@ -71,12 +70,16 @@
 
             services.nginx = {
               enable = true;
-              recommendedProxySettings = true;
+              # recommendedProxySettings = true;
               virtualHosts.ligo-webide = {
                 serverName = cfg_frontend.serverName;
+                root = req.webide;
                 locations."/" = {
-                  root = req.webide;
-                  tryFiles = "$uri $uri/ /index.html";
+                  index = "index.html";
+                  tryFiles = "$uri $uri/ /index.html =404";
+                };
+                locations."~ ^/local(?<route>/static/.*)" = {
+                  alias = req.webide + "$route";
                 };
                 locations."~ ^/api(?<route>/.*)" = {
                   proxyPass = "http://127.0.0.1:8080$route";
@@ -116,7 +119,7 @@
           # super naïve implementation, needs re-doing
           webide = pkgs.runCommand "ligo-webide"
             {
-              outputHash = "sha256-jUnVT9UJnNlzWXn/WosDjmrJ/9YTyxOI8tiiY+3tjXU=";
+              outputHash = "sha256-pvHmYD5+mypMlZ+eYV9rTkAKloT7fBnAHLdi4q2j3h0=";
               outputHashMode = "recursive";
               outputHashAlgo = "sha256";
               buildInputs = [
