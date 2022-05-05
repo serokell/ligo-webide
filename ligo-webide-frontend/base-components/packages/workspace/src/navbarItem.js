@@ -90,13 +90,13 @@ export default function navbarItem(projects, selected, username = 'local') {
 
   projectDropdown.unshift({
     id: 'open-project',
-    name: 'Open Project...',
+    name: 'Open Project',
     icon: 'fas fa-folder-plus',
     onClick: () => actions.openProject()
   })
   projectDropdown.unshift({
     id: 'new-project',
-    name: 'Create Project...',
+    name: 'Create Project',
     icon: 'fas fa-plus',
     onClick: () => actions.newProject(false)
   })
