@@ -126,7 +126,8 @@ export class CompilerManager {
         let amendedBuildPath = buildPath.replace(/\.[^/.]+$/, ".tz");
         projectManager.saveFile(amendedBuildPath, data);
 
-        CompilerManager.terminal.writeToTerminal("\nwrote output to " + amendedBuildPath);
+        CompilerManager.terminal.writeToTerminal("\nwrote output to " + amendedBuildPath + "\n\r\n\r");
+        projectManager.refreshDirectory(projectManager.projectRoot);
       });
 
     this.notification.dismiss()
