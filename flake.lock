@@ -118,11 +118,11 @@
     "hackage": {
       "flake": false,
       "locked": {
-        "lastModified": 1651627180,
-        "narHash": "sha256-h5oDjduo8Qd+XU1US4Ew95hFZGDZlZgZojQT1c10wtI=",
+        "lastModified": 1654305241,
+        "narHash": "sha256-hEgU77uCI0gwA1a/WY6ziyi5R88ZNwIIUP5x919jpvw=",
         "owner": "input-output-hk",
         "repo": "hackage.nix",
-        "rev": "ca4144bcb2416aabe0c3559f588c8f82db1fb7e3",
+        "rev": "b16b9b9ce0ef68a84c1d3fe058dbf851c829e391",
         "type": "github"
       },
       "original": {
@@ -156,11 +156,11 @@
         "stackage": "stackage"
       },
       "locked": {
-        "lastModified": 1651628021,
-        "narHash": "sha256-k9mRlf6XOZ5iN9T//DKeDBC1Fbxq2UzFl9R9eo43fFk=",
+        "lastModified": 1654305488,
+        "narHash": "sha256-2G3C8bq2DC5Mtv2U6n5fhvJEVZsINDZAdEetzmnoCa4=",
         "owner": "input-output-hk",
         "repo": "haskell.nix",
-        "rev": "b55ab7660bba923a4e3e7c3e77e37f4cfb09f266",
+        "rev": "3d26d9a747aa80aa446dd9720d5771cadde88af8",
         "type": "github"
       },
       "original": {
@@ -211,11 +211,11 @@
     "ligo": {
       "flake": false,
       "locked": {
-        "lastModified": 1559825893,
-        "narHash": "sha256-DqbaRt4MQ9+iyBNx1khL1/7HJqyMaVszqCbnSzpdVA4=",
-        "ref": "master",
-        "rev": "153bf691992580f4d163f4e8129292f7759efd5b",
-        "revCount": 3322,
+        "lastModified": 1654191627,
+        "narHash": "sha256-B+NHB/cAxM1GofKY/T0de3UXoczc7eb/HjJum07i/Cc=",
+        "ref": "refs/heads/tooling",
+        "rev": "ebcedd4a49b74378b13ce36983aa39273d74cb71",
+        "revCount": 9416,
         "type": "git",
         "url": "https://gitlab.com/serokell/ligo/ligo"
       },
@@ -373,11 +373,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1649673231,
-        "narHash": "sha256-1T3AFscfS7s9pkFA+UIDrHH3/RLVjRdYs5ImuLYpOlE=",
+        "lastModified": 1653931853,
+        "narHash": "sha256-O3wncIouj9x7gBPntzHeK/Hkmm9M1SGlYq7JI7saTAE=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "33772708c6d0e33f697426ba386aa0149cbcbecb",
+        "rev": "f1c167688a6f81f4a51ab542e5f476c8c595e457",
         "type": "github"
       },
       "original": {
@@ -412,11 +412,11 @@
     "stackage": {
       "flake": false,
       "locked": {
-        "lastModified": 1651627945,
-        "narHash": "sha256-eGGQrajzEQNTzuYMFUqazpBXI89pvbEtxxPyVDgFzSw=",
+        "lastModified": 1654305335,
+        "narHash": "sha256-UZHR4dfHRbXbl0hHfggl3DYzY3YqtVo43VoS2CBNomY=",
         "owner": "input-output-hk",
         "repo": "stackage.nix",
-        "rev": "c40a92c229f231ff47f896243c8ce333e1f74c4c",
+        "rev": "dc1128accc441ec0fa327289fcf79906d6ff3914",
         "type": "github"
       },
       "original": {

@@ -96,6 +96,7 @@
         with pkgs;
         let
           a_haskell-nix = haskell-nix.legacyPackages.${system}.haskell-nix;
+          y2n = pkgs.yarn2nix-moretea;
         in
         rec {
 
@@ -115,58 +116,71 @@
             in
             proj.${name}.components.exes.ligo-webide-backend;
 
+          webide =
+            let
+              packageCache =
+                let
+                  loadCache = f: y2n.importOfflineCache (y2n.mkYarnNix {
+                    yarnLock = f;
+                  });
 
-          # super naïve implementation, needs re-doing
-          webide = pkgs.runCommand "ligo-webide"
-            {
-              outputHash = "sha256-pvHmYD5+mypMlZ+eYV9rTkAKloT7fBnAHLdi4q2j3h0=";
-              outputHashMode = "recursive";
-              outputHashAlgo = "sha256";
-              buildInputs = [
-                yarn
-                nodejs
-                # for downloading external deps
-                git
-                cacert
-                # for building keytar
-                python3
-                pkg-config
-                libsecret
-                gcc
-              ];
-            } ''
-            TARGET=$TMP/build
-
-            export HOME=$TMP
-
-            cp -r ${sources} $TARGET
-            chmod -R +w $TARGET
-            cd $TARGET
-
-            pushd ligo-webide-frontend/base-components
-              yarn install --ignore-scripts --ignore-engines --ignore-platform
-              patchShebangs node_modules
-              yarn build
-            popd
-
-            pushd ligo-webide-frontend/ligo-components
-              yarn install --ignore-scripts --ignore-engines --ignore-platform
-              patchShebangs node_modules
-              yarn build
-            popd
-
-            pushd ligo-webide-frontend/ligo-ide
-              yarn install --ignore-scripts --ignore-engines --ignore-platform
-              patchShebangs node_modules
-              pushd node_modules/keytar
+                  paths = map loadCache [
+                    ./ligo-webide-frontend/ligo-ide/yarn.lock
+                    ./ligo-webide-frontend/base-components/yarn.lock
+                    ./ligo-webide-frontend/ligo-components/yarn.lock
+                  ];
+                in
+                pkgs.symlinkJoin {
+                  name = "cache";
+                  inherit paths;
+                };
+              yarnInstall = ''
+                ${y2n.fixup_yarn_lock}/bin/fixup_yarn_lock yarn.lock
+                yarn install --ignore-scripts --ignore-engines --ignore-platform --frozen-lockfile --offline
                 patchShebangs node_modules
-                npm run build
-              popd
-              yarn build:react
-            popd
+              '';
 
-            cp -r $TARGET/ligo-webide-frontend/ligo-ide/build $out
-          '';
+              setupYarn = ''
+                export HOME=$TMP
+                yarn config --offline set yarn-offline-mirror ${packageCache}
+                mkdir build; cd build;
+              '';
+
+              setupSources = s:
+                let name = builtins.baseNameOf s; in
+                ''
+                  cp -r ${s} ${name}
+                  chmod -R +w ${name}
+                  pushd ${name}
+                '';
+
+              yarnCommand = name: args: script: pkgs.runCommand name
+                (args // {
+                  buildInputs = [
+                    yarn
+                    nodejs
+                  ] ++ (args.buildInputs or [ ]);
+                })
+                script;
+
+              ligo-ide = yarnCommand "ligo-ide" { } ''
+                ${setupYarn}
+                ${setupSources ./ligo-webide-frontend/base-components}
+                  ${yarnInstall}
+                  yarn build
+                popd
+                ${setupSources ./ligo-webide-frontend/ligo-components}
+                  ${yarnInstall}
+                  yarn build
+                popd
+                ${setupSources ./ligo-webide-frontend/ligo-ide}
+                  ${yarnInstall}
+                  yarn build:react
+                  cp -r build $out
+                popd
+              '';
+            in
+            ligo-ide;
 
         }
 
