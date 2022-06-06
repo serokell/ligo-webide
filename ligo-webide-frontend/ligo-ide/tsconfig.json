@@ -25,10 +25,8 @@
     "noEmit": true,
     "noFallthroughCasesInSwitch": true
   },
-  "extends": "./paths.json",
   "include": [
     "./src",
-    "./src.main",
     "./test",
     "./mocks"
   ]

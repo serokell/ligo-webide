@@ -1,10 +1,10 @@
 {
   "name": "@obsidians/ipc",
   "version": "0.3.0",
-  "description": "IPC between electron main and renderer processes",
+  "description": "IPC",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
-  "main": "main/index.js",
+  "main": "src/index.js",
   "browser": "src/index.js",
   "dependencies": {
     "@obsidians/auth": "^0.3.0",
@@ -14,7 +14,6 @@
   },
   "peerDependencies": {
     "aws-sdk": "^2.830.0",
-    "electron": "*",
     "socket.io-client": "^2.4.0"
   }
 }

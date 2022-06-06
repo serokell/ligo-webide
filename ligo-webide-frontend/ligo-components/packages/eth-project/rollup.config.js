@@ -18,8 +18,7 @@ export default {
     }
   ],
   external: [
-    '@obsidians/compiler',
-    '@obsidians/premium-editor',
+    '@obsidians/eth-compiler',
     'prettier-plugin-solidity',
     ...Object.keys(pkg.dependencies),
     ...Object.keys(pkg.peerDependencies),

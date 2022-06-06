@@ -4,7 +4,7 @@
   "description": "File Operations",
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
-  "main": "main/index.js",
+  "main": "src/index.js",
   "browser": "src/index.js",
   "dependencies": {
     "@obsidians/ipc": "^0.3.0",
@@ -15,7 +15,6 @@
     "trash": "^7.0.0"
   },
   "peerDependencies": {
-    "aws-sdk": "^2.830.0",
-    "electron": "*"
+    "aws-sdk": "^2.830.0"
   }
 }

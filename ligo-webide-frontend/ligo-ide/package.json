@@ -15,25 +15,11 @@
     "node": ">=16"
   },
   "scripts": {
-    "dev:local": "REACT_APP_IPC_SERVER_URL=http://localhost:7001 react-app-rewired start",
     "dev:react": "react-app-rewired start",
     "build:react": "react-app-rewired build",
     "build:web": "PUBLIC_URL=/ CDN=true yarn build:react",
-    "build:main": "cross-env NODE_ENV=production webpack --config webpack.main.prod.config.js",
-    "dev": "concurrently \"yarn dev:react\" \"wait-on http://localhost:3000 && yarn dev:main\"",
-    "build": "yarn build:react && yarn build:main",
-    "lint": "tslint '{src,test,mocks}/**/*.{ts,tsx}' --project ./tsconfig.json",
-    "test": "jest '(\\/test\\/(?!e2e/)).*'",
-    "pretest:e2e": "yarn build",
-    "test:e2e": "jest '(\\/test\\/e2e/).*'",
     "eject": "react-scripts eject",
-    "analyze": "yarn build:web --stats && webpack-bundle-analyzer build/bundle-stats.json",
-    "_install": "electron-rebuild",
-    "_dev:main": "webpack --config webpack.main.config.js && electron ./dev/index.js",
-    "_prepare:main": "electron-rebuild && electron-builder install-app-deps",
-    "_dist": "yarn build && electron-builder -c.extraMetadata.main=build/main/index.js",
-    "_pack": "yarn build && electron-builder --dir",
-    "_prepare": "husky install"
+    "analyze": "yarn build:web --stats && webpack-bundle-analyzer build/bundle-stats.json"
   },
   "dependencies": {
     "crypto-browserify": "^3.12.0",
@@ -75,11 +61,6 @@
     "customize-cra": "^1.0.0",
     "default-shell": "^1.0.1",
     "dotenv": "^8.0.0",
-    "electron": "^16.0.2",
-    "electron-builder": "^22.14.5",
-    "electron-is-dev": "^2.0.0",
-    "electron-rebuild": "^3.2.5",
-    "electron-updater": "^4.6.1",
     "eslint-config-prettier": "^8.3.0",
     "eslint-config-react-app": "^6.0.0",
     "eslint-plugin-flowtype": "^8.0.3",
@@ -88,7 +69,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-react": "^7.27.1",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "husky": "^7.0.4",
     "immutable": "^4.0.0-rc.12",
     "import-sort-cli": "^6.0.0",
     "import-sort-parser-babylon": "^6.0.0",
@@ -121,7 +101,6 @@
     "webpack-merge": "^4.2.2"
   },
   "resolutions": {
-    "@solidity-parser/parser": "^0.12.1",
     "node-abi": "3.5.0",
     "node-sass": "npm:sass",
     "sass-loader": "10.2.0",

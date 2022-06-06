@@ -5,11 +5,10 @@
   "author": "Phil <qft.gtr@gmail.com>",
   "license": "GPL-3.0",
   "source": "src/index.js",
-  "main": "main/index.js",
+  "main": "src/index.js",
   "browser": "dist/index.es.js",
   "files": [
-    "dist",
-    "main"
+    "dist"
   ],
   "scripts": {
     "start": "rollup -c -w",
@@ -20,8 +19,7 @@
     "@obsidians/file-ops": "^0.3.0",
     "@obsidians/ipc": "^0.3.0",
     "@obsidians/platform": "^0.3.0",
-    "@obsidians/ui-components": "^0.3.0",
-    "electron-updater": "^4.6.1"
+    "@obsidians/ui-components": "^0.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.5",

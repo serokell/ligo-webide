@@ -1,7 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
 
-import platform from '@obsidians/platform'
 import fileOps from '@obsidians/file-ops'
 
 import './scss/index.scss'
@@ -9,11 +8,7 @@ import './scss/index.scss'
 import * as serviceWorker from './serviceWorker'
 import App from './App'
 
-if (platform.isDesktop) {
-  fileOps.fsType = 'electron'
-} else {
-  fileOps.fsType = 'web'
-}
+fileOps.fsType = 'web'
 
 if (!process.env.CDN) {
   import('./scss/fonts/open_sans/open_sans.css')

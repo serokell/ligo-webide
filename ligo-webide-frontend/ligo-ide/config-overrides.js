@@ -84,26 +84,6 @@ function customSplitting() {
 }
 
 const overrides = [
-  addWebpackAlias({
-    crypto: 'crypto-browserify',
-    'react-highlight': path.resolve(__dirname, 'node_modules/react-highlight'),
-    '@solidity-parser/parser': '@solidity-parser/parser/dist/index.cjs.js',
-    '@': path.resolve(__dirname, 'src/lib'),
-    '@obsidians/welcome': `@obsidians/${process.env.BUILD}-welcome`,
-    '@obsidians/header': `@obsidians/${process.env.BUILD}-header`,
-    '@obsidians/bottombar': `@obsidians/${process.env.BUILD}-bottombar`,
-    '@obsidians/compiler': `@obsidians/${process.env.BUILD}-compiler`,
-    '@obsidians/project': `@obsidians/${process.env.BUILD}-project`,
-    '@obsidians/contract': `@obsidians/${process.env.BUILD}-contract`,
-    '@obsidians/explorer': `@obsidians/${process.env.BUILD}-explorer`,
-    '@obsidians/network': `@obsidians/${process.env.BUILD}-network`,
-    '@obsidians/node': `@obsidians/${process.env.BUILD}-node`,
-    '@obsidians/sdk': `@obsidians/${process.env.BUILD}-sdk`,
-    '@obsidians/premium-editor': path.resolve(
-      __dirname,
-      process.env.PREMIUM_EDITOR || 'empty.js'
-    ),
-  }),
   overrideProcessEnv({
     CDN: JSON.stringify(!!process.env.CDN),
     BUILD: JSON.stringify(process.env.BUILD),
