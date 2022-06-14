@@ -1,22 +1,9 @@
-import HttpClient from './HttpClient'
-
 export default class HttpIpcChannel {
   constructor(channel = 'default', uid = '') {
     this.channel = channel
     this.uid = uid
     this.listeners = {}
     this._onDataReceived = this._onDataReceived.bind(this)
-
-    const {
-      REACT_APP_SERVER_URL,
-      REACT_APP_IPC_SERVER_URL,
-    } = process.env
-    this.client = new HttpClient(
-      this,
-      `${REACT_APP_SERVER_URL}/api/v1`,
-      `${REACT_APP_IPC_SERVER_URL}/api/v1`
-    )
-    this.client.on(this.channelResponse, this._onDataReceived)
   }
 
   get channelName() {
@@ -37,11 +24,9 @@ export default class HttpIpcChannel {
 
   dispose () {
     this.listeners = {}
-    this.client.removeListener(this.channelResponse, this._onDataReceived)
   }
 
   async invoke (method, ...args) {
-    return await this.client.invoke(this.channelName, method, ...args)
   }
 
   on (event, callback) {
