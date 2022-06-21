@@ -1,4 +1,9 @@
 {
+  nixConfig = {
+    extra-substituters = ["https://hydra.iohk.io"];
+    extra-trusted-public-keys = ["hydra.iohk.io:f/Ea+s+dFdN+3Y/G+FDgSq+a5NEWhJGzdjvKNGv0/EQ="];
+  };
+
   inputs = {
     haskell-nix.url = "github:input-output-hk/haskell.nix";
     ligo = {
