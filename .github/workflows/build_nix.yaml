@@ -7,21 +7,20 @@ on:
 
 jobs:
 
-  build:
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os:
-          - ubuntu-latest
+  # build:
+  #   runs-on: ${{ matrix.os }}
+  #   strategy:
+  #     matrix:
+  #       os:
+  #         - ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: cachix/install-nix-action@v16
-      - name: Building default package
-        run: nix build .
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: cachix/install-nix-action@v16
+  #     - name: Building default package
+  #       run: nix build .
 
   check:
-    if: false
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
@@ -32,4 +31,4 @@ jobs:
       - uses: actions/checkout@v2
       - uses: cachix/install-nix-action@v16
       - name: Running checks
-        run: nix flake check .
+        run: nix flake check . -L
