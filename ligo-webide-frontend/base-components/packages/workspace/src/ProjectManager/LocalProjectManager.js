@@ -220,50 +220,66 @@ export default class LocalProjectManager extends BaseProjectManager {
 
   // TODO turn on drag events
 
-  // async moveOps({ from, to }) {
-  //   const { path, fs } = fileOps
-  //   const toDir = await this.getDir(to)
-  //   const fromIsFile = await this.isFile(from)
-  //   const { name: fromName, ext: fromExt } = path.parse(from)
-  //   const dest = fromIsFile ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName}`
+  async moveOps(from, to, type) {
+    // console.log("moveOps" + from + to)
+    // const { path, fs } = fileOps
+    // const toDir = await this.getDir(to)
+    // const fromIsFile = await this.isFile(from)
+    // const { name: fromName, ext: fromExt } = fileOps.path.parse(from)
+    // const dest = fromIsFile ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName}`
 
-  //   const exsist = await await fileOps.exists(path)
+    // const exsist = await await fileOps.exists(fileOps.path)
 
-  //   try {
-  //     if (exsist) {
-  //       const { response } = await fileOps.showMessageBox({
-  //         message: `A file or folder with the name '${fromName}' already exists. Do you want to replace it?`,
-  //         buttons: ['Replace', 'Cancel']
-  //       })
-  //       if (response === 0) {
-  //         await fs.move(from, dest, { overwrite: true })
-  //       }
-  //     } else {
-  //       await fs.move(from, dest)
-  //     }
-  //   } catch (e) {
-  //     throw new Error(`Fail to move <b>${dest}</b>.`)
-  //   }
-  // }
+    // try {
+    //   if (exsist) {
+    //     const { response } = await fileOps.showMessageBox({
+    //       message: `A file or folder with the name '${fromName}' already exists. Do you want to replace it?`,
+    //       buttons: ['Replace', 'Cancel']
+    //     })
+    //     if (response === 0) {
+    //       await fileOps.move(from, dest, { overwrite: true })
+    //     }
+    //   } else {
+    //     await fileOps.move(from, dest)
+    //   }
+    // } catch (e) {
+    //   throw new Error(`Fail to move <b>${dest}</b>.`)
+    // }
+    if (type === 'file') {
+      await fileOps.copyMoveFile(from, to, 'move')
+    }
+
+    if (type === 'folder') {
+      await fileOps.copyMoveFolder(from, to, 'move')
+    }
+  }
 
   // TODO turn on drag events
 
-  // async copyOps({ from, to }) {
-  //   const { path } = fileOps
-  //   const toDir = await this.getDir(to)
-  //   const fromIsFile = await this.isFile(from)
-  //   const { name: fromName, ext: fromExt } = path.parse(from)
-  //   let dest = !fromIsFile ? `${toDir}/${fromName}` : `${toDir}/${fromName}_copy1${fromExt}`
-  //   let safeCount = 0
+  async copyOps(from, to, type) {
+    // console.log("copyOps" + from + to)
+    // const { path } = fileOps
+    // const toDir = await this.getDir(to)
+    // const fromIsFile = await this.isFile(from)
+    // const { name: fromName, ext: fromExt } = fileOps.path.parse(from)
+    // let dest = !fromIsFile ? `${toDir}/${fromName}` : `${toDir}/${fromName}_copy1${fromExt}`
+    // let safeCount = 0
 
-  //   while (!await this.copy(from, dest) && safeCount < 10) {
-  //     const matched = dest.match(/(?<=copy)\d*(?=\.)/g)
-  //     safeCount++
-  //     if (matched) {
-  //       dest = dest.replace(/(?<=copy)\d*(?=\.)/g, Number(matched[0]) + 1)
-  //     }
-  //   }
-  // }
+    // while (!await this.copy(from, dest) && safeCount < 10) {
+    //   const matched = dest.match(/(?<=copy)\d*(?=\.)/g)
+    //   safeCount++
+    //   if (matched) {
+    //     dest = dest.replace(/(?<=copy)\d*(?=\.)/g, Number(matched[0]) + 1)
+    //   }
+    // }
+    if (type === 'file') {
+      await fileOps.copyMoveFile(from, to, 'copy')
+    }
+
+    if (type === 'folder') {
+      await fileOps.copyMoveFolder(from, to, 'copy')
+    }
+  }
 
   async rename(oldPath, name) {
     const path = fileOps.pathHelper
