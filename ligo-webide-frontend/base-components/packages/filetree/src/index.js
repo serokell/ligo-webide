@@ -289,6 +289,8 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
   const handleClick = (event, node) => {
     disableSetActive = node.isLeaf
     clickFolderNode(event, node)
+    setIsBlankAreaRightClick(false)
+    setRightClikNode(node)
   }
 
   const clickFolderNode = (event, node) => {
@@ -436,7 +438,6 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
   }
 
   const handleDragOver = ({ event, node }) => {
-    if (projectManager.remote) return
     setIsCopy(event.altKey)
     event.dataTransfer.dropEffect = event.altKey ? 'copy' : 'move'
   }
@@ -477,33 +478,14 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     deleteEvent.onClick(selectNode)
   }, [treeNodeContextMenu, selectNode])
 
-  useHotkeys('ctrl+x, cmd+x', () => {
-    if (projectManager.remote) return
-    setMoveNode(selectNode)
-    setCopyNode(null)
-  }, [treeNodeContextMenu, selectNode, copyNode])
-
   useHotkeys('ctrl+c, cmd+c', () => {
-    if (projectManager.remote) return
     setCopyNode(selectNode)
-    setMoveNode(null)
   }, [treeNodeContextMenu, selectNode, copyNode, selectedKeys])
 
   useHotkeys('ctrl+v, cmd+v', () => {
-    if (projectManager.remote) return
-    if (moveNode && !moveNode.root && selectNode.path !== moveNode.path) { // handle move event
-      move(moveNode, selectNode)
-      setMoveNode(null)
-      return
+    if (copyNode && !copyNode.root && selectNode) {
+      handleDrop({ node: selectNode, dragNode: copyNode })
     }
-
-    if (copyNode && !copyNode.root) { // handle copy event
-      const sameNode = copyNode.path === selectNode.path
-      sameNode
-            ? copy(copyNode) // handle copy event without given a new path of copied file
-            : copy(copyNode, selectNode, true) // handle copy event with given a new path of copied file
-    }
-    setExpandKeys(filterDuplicate([...expandedKeys, selectNode.key]))
   }, [treeNodeContextMenu, copyNode, selectNode, expandedKeys])
 
   return (
