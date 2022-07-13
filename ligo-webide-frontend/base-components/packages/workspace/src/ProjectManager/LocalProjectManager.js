@@ -218,33 +218,7 @@ export default class LocalProjectManager extends BaseProjectManager {
     await this.refreshDirectory({type: 'newDirectory', basePath, name, path: folderPath})
   }
 
-  // TODO turn on drag events
-
   async moveOps(from, to, type) {
-    // console.log("moveOps" + from + to)
-    // const { path, fs } = fileOps
-    // const toDir = await this.getDir(to)
-    // const fromIsFile = await this.isFile(from)
-    // const { name: fromName, ext: fromExt } = fileOps.path.parse(from)
-    // const dest = fromIsFile ? `${toDir}/${fromName}${fromExt}` : `${toDir}/${fromName}`
-
-    // const exsist = await await fileOps.exists(fileOps.path)
-
-    // try {
-    //   if (exsist) {
-    //     const { response } = await fileOps.showMessageBox({
-    //       message: `A file or folder with the name '${fromName}' already exists. Do you want to replace it?`,
-    //       buttons: ['Replace', 'Cancel']
-    //     })
-    //     if (response === 0) {
-    //       await fileOps.move(from, dest, { overwrite: true })
-    //     }
-    //   } else {
-    //     await fileOps.move(from, dest)
-    //   }
-    // } catch (e) {
-    //   throw new Error(`Fail to move <b>${dest}</b>.`)
-    // }
     if (type === 'file') {
       await fileOps.copyMoveFile(from, to, 'move')
     }
@@ -252,26 +226,11 @@ export default class LocalProjectManager extends BaseProjectManager {
     if (type === 'folder') {
       await fileOps.copyMoveFolder(from, to, 'move')
     }
+
+    await this.refreshDirectory({type: type === 'file' ? 'moveFile' : 'moveDirectory', targetPath: from, dropPath: to})
   }
 
-  // TODO turn on drag events
-
   async copyOps(from, to, type) {
-    // console.log("copyOps" + from + to)
-    // const { path } = fileOps
-    // const toDir = await this.getDir(to)
-    // const fromIsFile = await this.isFile(from)
-    // const { name: fromName, ext: fromExt } = fileOps.path.parse(from)
-    // let dest = !fromIsFile ? `${toDir}/${fromName}` : `${toDir}/${fromName}_copy1${fromExt}`
-    // let safeCount = 0
-
-    // while (!await this.copy(from, dest) && safeCount < 10) {
-    //   const matched = dest.match(/(?<=copy)\d*(?=\.)/g)
-    //   safeCount++
-    //   if (matched) {
-    //     dest = dest.replace(/(?<=copy)\d*(?=\.)/g, Number(matched[0]) + 1)
-    //   }
-    // }
     if (type === 'file') {
       await fileOps.copyMoveFile(from, to, 'copy')
     }
@@ -279,6 +238,8 @@ export default class LocalProjectManager extends BaseProjectManager {
     if (type === 'folder') {
       await fileOps.copyMoveFolder(from, to, 'copy')
     }
+
+    await this.refreshDirectory({type: type === 'file' ? 'copyFile' : 'copyDirectory', targetPath: from, dropPath: to})
   }
 
   async rename(oldPath, name) {
