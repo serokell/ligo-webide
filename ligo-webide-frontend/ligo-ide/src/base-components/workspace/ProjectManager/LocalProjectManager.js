@@ -105,7 +105,7 @@ export default class LocalProjectManager extends BaseProjectManager {
   async loadRootDirectory() {
     const result = await this.readDirectory(this.projectRoot);
 
-    const rawData = result.map(item => ({
+    const rawData = result.map((item) => ({
       ...item,
       pathInProject: `${this.projectName}/${item.name}`,
     }));
@@ -149,7 +149,7 @@ export default class LocalProjectManager extends BaseProjectManager {
 
   async loadDirectory(node) {
     const result = await this.readDirectory(node.path);
-    const rawData = result.map(item => ({
+    const rawData = result.map((item) => ({
       ...item,
       pathInProject: this.pathInProject(item.path),
     }));

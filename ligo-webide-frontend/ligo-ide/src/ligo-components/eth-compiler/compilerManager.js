@@ -120,8 +120,8 @@ export class CompilerManager {
       }),
     });
     fetch(request)
-      .then(response => response.json())
-      .then(async data => {
+      .then((response) => response.json())
+      .then(async (data) => {
         CompilerManager.terminal.writeToTerminal(data.replace(/\n/g, "\n\r"));
 
         // Write output to file
@@ -138,7 +138,7 @@ export class CompilerManager {
         CompilerManager.terminal.writeToTerminal(`\nwrote output to ${amendedBuildPath}\n\r\n\r`);
         projectManager.refreshDirectory(projectManager.projectRoot);
       })
-      .catch(e => {
+      .catch((e) => {
         throw new Error(`Cannot compile contract <b>${JSON.stringify(e)}</b>.`);
       });
 
@@ -192,8 +192,8 @@ export class CompilerManager {
     let status = "";
     let currentBlock = "";
     lines
-      .map(line => line.trim())
-      .forEach(line => {
+      .map((line) => line.trim())
+      .forEach((line) => {
         if (!line) {
           if (status === "ERROR") {
             errors.push(currentBlock.trim());
@@ -216,7 +216,7 @@ export class CompilerManager {
           currentBlock += `${line}\n`;
         }
       });
-    decorations = decorations.map(msg => {
+    decorations = decorations.map((msg) => {
       const lines = msg.split("\n");
       const [prefix, ...rest] = lines[0].split(": ");
       const [filePath, row, column] = prefix.split(":");

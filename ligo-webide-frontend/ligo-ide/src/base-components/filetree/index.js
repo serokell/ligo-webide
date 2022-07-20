@@ -43,8 +43,8 @@ const renderSwitcherIcon = ({ loading, expanded, data }) => {
 };
 
 const setLeaf = (treeData, curKey) => {
-  const loopLeaf = data => {
-    data.forEach(item => {
+  const loopLeaf = (data) => {
+    data.forEach((item) => {
       if (!item.key) {
         item.key = item.path;
       }
@@ -99,12 +99,12 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
 
   isBlankAreaRightClick &&
     (treeNodeContextMenu = treeNodeContextMenu.filter(
-      item => item && (item.text === "New File" || item.text === "New Folder")
+      (item) => item && (item.text === "New File" || item.text === "New Folder")
     ));
   // Removing rename and delete operations from the root of the file tree
   if (!isBlankAreaRightClick && isTreeDataRoot) {
     const renameAndDeleteText = ["Rename", "Delete"];
-    treeNodeContextMenu = treeNodeContextMenu.filter(item => {
+    treeNodeContextMenu = treeNodeContextMenu.filter((item) => {
       return item ? !renameAndDeleteText.includes(item.text) : treeNodeContextMenu.push(null);
     });
     !treeNodeContextMenu.slice(-1)[0] && treeNodeContextMenu.pop();
@@ -152,7 +152,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     });
   };
 
-  const handleEmptyTreeContextMenu = event => {
+  const handleEmptyTreeContextMenu = (event) => {
     if (event.target.className.includes("react-contexify")) return;
     setIsBlankAreaRightClick(true);
     setRightClikNode(treeData[0]);
@@ -164,7 +164,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     });
   };
 
-  const handleMenuItemClick = item => {
+  const handleMenuItemClick = (item) => {
     return ({ event }) => {
       item.onClick(rightClickNode);
       event.stopPropagation();
@@ -172,7 +172,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     };
   };
 
-  const renderMenu = treeNodeContextMenu => {
+  const renderMenu = (treeNodeContextMenu) => {
     return treeNodeContextMenu.map((item, index) =>
       item ? (
         <Item key={item.text} onClick={handleMenuItemClick(item)}>
@@ -191,7 +191,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     }
   };
 
-  const addPersist = event => {
+  const addPersist = (event) => {
     removePersist();
     event.currentTarget.parentElement.className += " persist--active";
     setPersist(event.currentTarget.parentElement);
@@ -216,7 +216,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
         ));
   };
 
-  const updateTitle = treeData => {
+  const updateTitle = (treeData) => {
     const rawDecoration = modelSessionManager.decorationMap;
     const hasError = Object.keys(rawDecoration).length !== 0;
     if (!hasError) return;
@@ -225,7 +225,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     setTreeData([treeData]);
   };
 
-  const refreshDirectory = async data => {
+  const refreshDirectory = async (data) => {
     if (data.type === "newFile" || data.type === "newDirectory") {
       const tempTree = cloneDeep(treeDataRef.current);
       const newNode =
@@ -250,7 +250,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
               loading: true,
               remote: true,
             };
-      const parentNode = findInTree(tempTree, node => node.path === data.basePath);
+      const parentNode = findInTree(tempTree, (node) => node.path === data.basePath);
 
       if (parentNode) {
         parentNode.children.push(newNode);
@@ -261,7 +261,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
 
     if (data.type === "renameFile" || data.type === "renameDirectory") {
       const tempTree = cloneDeep(treeDataRef.current);
-      const node = findInTree(tempTree, node => node.path === data.oldPath);
+      const node = findInTree(tempTree, (node) => node.path === data.oldPath);
       if (node) {
         node.title = data.newName;
         node.key = data.newPath;
@@ -269,7 +269,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
         node.path = data.newPath;
       }
       if (node && data.type === "renameDirectory") {
-        mapTree(node.children, nd => {
+        mapTree(node.children, (nd) => {
           nd.key = nd.key.replace(data.oldPath, data.newPath);
           nd.path = nd.path.replace(data.oldPath, data.newPath);
         });
@@ -277,7 +277,9 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
       if (node) {
         setTreeData([...tempTree]);
         if (data.type === "renameDirectory") {
-          setExpandKeys(expandKeysRef.current.map(key => key.replace(data.oldPath, data.newPath)));
+          setExpandKeys(
+            expandKeysRef.current.map((key) => key.replace(data.oldPath, data.newPath))
+          );
         }
       }
     }
@@ -286,14 +288,14 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
       const tempTree = cloneDeep(treeDataRef.current);
       const parentNode = findInTree(
         tempTree,
-        node => node.path === data.path.substring(0, data.path.lastIndexOf("/"))
+        (node) => node.path === data.path.substring(0, data.path.lastIndexOf("/"))
       );
       if (parentNode) {
-        parentNode.children = parentNode.children.filter(node => node.path !== data.path);
+        parentNode.children = parentNode.children.filter((node) => node.path !== data.path);
         setTreeData([...tempTree]);
 
         if (data.type === "deleteDirectory") {
-          setExpandKeys(expandKeysRef.current.filter(key => !key.includes(data.path)));
+          setExpandKeys(expandKeysRef.current.filter((key) => !key.includes(data.path)));
         }
       }
     }
@@ -305,32 +307,32 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
       data.type === "copyDirectory"
     ) {
       const tempTree = cloneDeep(treeDataRef.current);
-      const targetNode = cloneDeep(findInTree(tempTree, node => node.path === data.targetPath));
+      const targetNode = cloneDeep(findInTree(tempTree, (node) => node.path === data.targetPath));
       let newExpandKeys = expandKeysRef.current;
       const parentTargetPath = data.targetPath.substring(0, data.targetPath.lastIndexOf("/"));
       const parentDropPath = data.dropPath.substring(0, data.dropPath.lastIndexOf("/"));
 
       if (data.type === "moveFile" || data.type === "moveDirectory") {
-        const parentNode = findInTree(tempTree, node => node.path === parentTargetPath);
+        const parentNode = findInTree(tempTree, (node) => node.path === parentTargetPath);
         if (parentNode) {
-          parentNode.children = parentNode.children.filter(node => node.path !== data.targetPath);
+          parentNode.children = parentNode.children.filter((node) => node.path !== data.targetPath);
 
           if (data.type === "moveDirectory") {
-            newExpandKeys = newExpandKeys.filter(key => !key.includes(data.targetPath));
+            newExpandKeys = newExpandKeys.filter((key) => !key.includes(data.targetPath));
           }
         }
       }
 
       if (targetNode) {
-        mapTree([targetNode], nd => {
+        mapTree([targetNode], (nd) => {
           nd.key = nd.key.replace(data.targetPath, data.dropPath);
           nd.path = nd.path.replace(data.targetPath, data.dropPath);
         });
 
-        newExpandKeys = newExpandKeys.map(key => key.replace(data.targetPath, data.dropPath));
+        newExpandKeys = newExpandKeys.map((key) => key.replace(data.targetPath, data.dropPath));
       }
 
-      const dropNode = findInTree(tempTree, node => node.path === parentDropPath);
+      const dropNode = findInTree(tempTree, (node) => node.path === parentDropPath);
       console.log(dropNode, data);
 
       if (dropNode) {
@@ -384,7 +386,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     setSelectNode(node);
   };
 
-  const handleSetActive = activeKey => {
+  const handleSetActive = (activeKey) => {
     const rootPath = projectManager.projectRoot;
     const hasRootPath = activeKey.includes(rootPath);
     const fileteredKey = hasRootPath
@@ -407,7 +409,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
       let stop = false;
       if (curNode.path === nodeKey) {
         setSelectNode(curNode);
-        folderArr.forEach(item => {
+        folderArr.forEach((item) => {
           if (!expandedKeys.includes(item) && item !== nodeKey) {
             setExpandKeys([...expandedKeys, item]);
           }
@@ -428,7 +430,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
   const enableHighLightBlock = (tree, needHighLight) => {
     let firstNode;
     let lastNode;
-    const refreshClassName = node => {
+    const refreshClassName = (node) => {
       if (!firstNode) {
         firstNode = node;
       }
@@ -463,7 +465,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
       ? `${node.className} node--disable`
       : node.className.replaceAll("node--disable", "");
     if (node.children) {
-      node.children.forEach(item => {
+      node.children.forEach((item) => {
         disableChildren(item, needDisable);
       });
     }
@@ -485,7 +487,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
 
     if (node.path.includes(dragTarget.path)) {
       if (prevDragEnter) {
-        const prevN = findInTree(treeData, treeNode => treeNode.path === prevDragEnter.path);
+        const prevN = findInTree(treeData, (treeNode) => treeNode.path === prevDragEnter.path);
         prevN && enableHighLightBlock(prevN, false);
       }
       setPrevDragEnter(undefined);
@@ -494,7 +496,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
 
     const fatherOrSelf = findInTree(
       treeData,
-      treeNode =>
+      (treeNode) =>
         treeNode.path === (node.type === "folder" || node.root ? node.path : node.fatherPath)
     );
     if (fatherOrSelf) {
@@ -503,7 +505,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
       }
 
       if (prevDragEnter) {
-        const prevN = findInTree(treeData, treeNode => treeNode.path === prevDragEnter.path);
+        const prevN = findInTree(treeData, (treeNode) => treeNode.path === prevDragEnter.path);
         prevN && enableHighLightBlock(prevN, false);
       }
       const isExist = expandedKeys.includes(fatherOrSelf.path);
@@ -525,7 +527,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
 
   const handleDragEnd = ({ event, node }) => {
     enableHighLightBlock(...treeData, false);
-    const prevN = findInTree(treeData, treeNode => treeNode.path === dragTarget.path);
+    const prevN = findInTree(treeData, (treeNode) => treeNode.path === dragTarget.path);
     disableChildren(prevN, false);
     setDragTarget("");
     event.currentTarget.id = "";
@@ -552,7 +554,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     event.currentTarget.parentElement.id = "";
   };
 
-  const findEvent = name => treeNodeContextMenu.find(item => item && item.text === name);
+  const findEvent = (name) => treeNodeContextMenu.find((item) => item && item.text === name);
 
   useHotkeys(
     "ctrl+del, cmd+backspace",
@@ -599,7 +601,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
         expandedKeys={expandedKeys}
         selectedKeys={selectedKeys}
         autoExpandParent={autoExpandParent}
-        switcherIcon={nodeProps => renderSwitcherIcon(nodeProps)}
+        switcherIcon={(nodeProps) => renderSwitcherIcon(nodeProps)}
         onRightClick={handleContextMenu}
         onClick={handleClick}
         onExpand={handleExpand}
