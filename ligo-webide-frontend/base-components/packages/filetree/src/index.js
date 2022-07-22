@@ -110,23 +110,17 @@ const replaceTreeNode = (treeData, curKey, child) => {
 const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, ref) => {
   const treeRef = React.useRef()
   const [treeData, setTreeData] = useState([])
-  const treeDataRef = useRef([])
+  const treeDataRef = useRef()
+  treeDataRef.current = treeData
   const [autoExpandParent, setAutoExpandParent] = useState(true)
   const [expandedKeys, setExpandKeys] = useState([])
-  const expandKeysRef = useRef([])
+  const expandKeysRef = useRef()
+  expandKeysRef.current = expandedKeys
   const [selectedKeys, setSelectedKeys] = useState([])
   const [selectNode, setSelectNode] = useState(null)
   const [enableCopy, setEnableCopy] = useState(false)
   const [isBlankAreaRightClick, setIsBlankAreaRightClick] = useState(false)
   const [isTreeDataRoot, setIsTreeDataRoot] = useState(false)
-
-  useEffect(() => {
-    treeDataRef.current = treeData;
-  }, [treeData]);
-
-  useEffect(() => {
-    expandKeysRef.current = expandedKeys;
-  }, [expandedKeys]);
 
   let treeNodeContextMenu = typeof contextMenu === 'function' ? contextMenu(selectNode) : contextMenu
 
@@ -247,7 +241,7 @@ const FileTree = ({ projectManager, onSelect, contextMenu, readOnly = false }, r
     const refreshDirectory = async (data) => {
       if (data.type === 'newFile' || data.type === 'newDirectory') {
         const tempTree = cloneDeep(treeDataRef.current)
-        const newNode = data.type === 'newFile' 
+        const newNode = data.type === 'newFile'
           ? { type: 'file', title: data.name, key: data.path, name: data.name, path: data.path, remote: true, isLeaf: true }
           : { type: 'folder', title: data.name, key: data.path, children: [], isLeaf: false, name: data.name, path: data.path, loading: true, remote: true }
         const parentNode = findInTree(tempTree, (node) => node.path === data.basePath)
