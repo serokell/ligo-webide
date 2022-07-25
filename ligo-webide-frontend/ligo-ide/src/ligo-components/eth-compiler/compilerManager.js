@@ -124,39 +124,46 @@ export class CompilerManager {
       .then(async (data) => {
         CompilerManager.terminal.writeToTerminal(data.replace(/\n/g, "\n\r"));
 
-        const buildFolder = projectManager.projectRoot + "/build";
+        const buildFolder = `${projectManager.projectRoot}/build`;
 
         // Write output to file
-        if (!await fileOps.exists(buildFolder)) {
+        if (!(await fileOps.exists(buildFolder))) {
           await projectManager.writeDirectory(projectManager.projectRoot, "build");
         }
 
-        const buildRelatedPath = projectManager.mainFilePath.replace(projectManager.projectRoot + "/", "");
+        const buildRelatedPath = projectManager.mainFilePath.replace(
+          `${projectManager.projectRoot}/`,
+          ""
+        );
         const buildRelatedFolders = buildRelatedPath.split("/").slice(0, -1);
 
         let curFolder = buildFolder;
         for (let i = 0; i < buildRelatedFolders.length; i++) {
-          if (!await fileOps.exists(curFolder + "/" + buildRelatedFolders[i])) {
+          if (!(await fileOps.exists(`${curFolder}/${buildRelatedFolders[i]}`))) {
             await projectManager.writeDirectory(curFolder, buildRelatedFolders[i]);
-            curFolder = curFolder + "/" + buildRelatedFolders[i];
+            curFolder = `${curFolder}/${buildRelatedFolders[i]}`;
           }
         }
 
-        const buildPath = projectManager.projectRoot
-              + "/build"
-              + projectManager.mainFilePath.replace(projectManager.projectRoot, "");
+        const buildPath = `${projectManager.projectRoot}/build${projectManager.mainFilePath.replace(
+          projectManager.projectRoot,
+          ""
+        )}`;
         const amendedBuildPath = buildPath.replace(/\.[^/.]+$/, ".tz");
         const fileFolder = amendedBuildPath.substring(0, amendedBuildPath.lastIndexOf("/"));
-        const fileName = amendedBuildPath.substring(amendedBuildPath.lastIndexOf("/") + 1, amendedBuildPath.length);
+        const fileName = amendedBuildPath.substring(
+          amendedBuildPath.lastIndexOf("/") + 1,
+          amendedBuildPath.length
+        );
 
-        if (!await fileOps.exists(amendedBuildPath)) {
-          await projectManager.createNewFile(fileFolder, fileName)
-          await projectManager.saveFile(amendedBuildPath, data)
+        if (!(await fileOps.exists(amendedBuildPath))) {
+          await projectManager.createNewFile(fileFolder, fileName);
+          await projectManager.saveFile(amendedBuildPath, data);
         } else {
-          await projectManager.saveFile(amendedBuildPath, data)
+          await projectManager.saveFile(amendedBuildPath, data);
         }
 
-        CompilerManager.terminal.writeToTerminal("\nwrote output to " + "amendedBuildPath" + "\n\r\n\r");
+        CompilerManager.terminal.writeToTerminal(`\nwrote output to ${amendedBuildPath}\n\r\n\r`);
       })
       .catch((e) => {
         throw new Error(`Cannot compile contract <b>${JSON.stringify(e)}</b>.`);

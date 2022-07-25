@@ -119,6 +119,7 @@ module.exports = {
         "@typescript-eslint/naming-convention": 0,
         "@typescript-eslint/no-loop-func": 0,
         "@typescript-eslint/no-empty-function": 0,
+        "@typescript-eslint/prefer-regexp-exec": 0,
 
         // TODO: remove or update
         "import/extensions": 0,
