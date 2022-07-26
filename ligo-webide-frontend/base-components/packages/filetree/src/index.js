@@ -77,6 +77,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
   const [persistDOM, setPersist] = useState(null)
   const [selectNode, setSelectNode] = useState(null)
   const [rightClickNode, setRightClikNode] = useState(null)
+  const [moveNode, setMoveNode] = useState(null)
   const [copyNode, setCopyNode] = useState(null)
   const [isCopy, setIsCopy] = useState(true)
   const [dragTarget, setDragTarget] = useState('')
@@ -287,7 +288,6 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
           }
 
           const dropNode = findInTree(tempTree, (node) => node.path === parentDropPath)
-          console.log(dropNode, data)
 
           if (dropNode) {
               dropNode.children.push(targetNode)
@@ -509,15 +509,26 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     deleteEvent.onClick(selectNode)
   }, [treeNodeContextMenu, selectNode])
 
+  useHotkeys('ctrl+x, cmd+x', () => {
+    setMoveNode(selectNode)
+    setCopyNode(null)
+    setIsCopy(false)
+  }, [treeNodeContextMenu, selectNode, copyNode, moveNode])
+
   useHotkeys('ctrl+c, cmd+c', () => {
     setCopyNode(selectNode)
-  }, [treeNodeContextMenu, selectNode, copyNode, selectedKeys])
+    setMoveNode(null)
+    setIsCopy(true)
+  }, [treeNodeContextMenu, selectNode, copyNode, selectedKeys, moveNode])
 
   useHotkeys('ctrl+v, cmd+v', () => {
     if (copyNode && !copyNode.root && selectNode) {
       handleDrop({ node: selectNode, dragNode: copyNode })
     }
-  }, [treeNodeContextMenu, copyNode, selectNode, expandedKeys])
+    if (moveNode && !moveNode.root && selectNode) {
+      handleDrop({ node: selectNode, dragNode: moveNode })
+    }
+  }, [treeNodeContextMenu, copyNode, selectNode, expandedKeys, moveNode])
 
   return (
     <div className='tree-wrap animation'
