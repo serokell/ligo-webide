@@ -436,7 +436,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     if (prevDragEnter && node.path === prevDragEnter.path) {
       return
     }
-
+    
     if (node.path.includes(dragTarget.path)) {
       if (prevDragEnter) {
         const prevN = findInTree(treeData, (treeNode) => treeNode.path === prevDragEnter.path)
@@ -483,13 +483,15 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
   }
 
   const handleDrop = ({ node, dragNode }) => {
-    if (dragNode.path.substring(0, dragNode.path.lastIndexOf('/') + 1) === node.path) {
+    let targetFolderPath = node.type === 'folder' || node.root ? node.path : node.fatherPath
+
+    if (dragNode.path.substring(0, dragNode.path.lastIndexOf('/')) === targetFolderPath || node.path.includes(dragNode.path)) {
       return
     }
 
     isCopy
-       ? projectManager.copyOps(dragNode.path, node.path + '/' + dragNode.name, dragNode.type)
-          : projectManager.moveOps(dragNode.path, node.path + '/' + dragNode.name, dragNode.type)
+       ? projectManager.copyOps(dragNode.path, targetFolderPath + '/' + dragNode.name, dragNode.type)
+          : projectManager.moveOps(dragNode.path, targetFolderPath + '/' + dragNode.name, dragNode.type)
   }
 
   const handleMouseEnter = ({ event }) => {
