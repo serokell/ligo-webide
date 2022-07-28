@@ -69,6 +69,9 @@ library:
   - mtl
   - process
   - servant-server
+  - servant-swagger
+  - servant-swagger-ui
+  - swagger2
   - temporary
   - text
   - wai
