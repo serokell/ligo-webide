@@ -219,24 +219,34 @@ export default class LocalProjectManager extends BaseProjectManager {
   }
 
   async moveOps(from, to, type) {
-    if (type === 'file') {
-      await fileOps.copyMoveFile(from, to, 'move')
-    }
+    try {
+      if (type === 'file') {
+        await fileOps.copyMoveFile(from, to, 'move')
+      }
 
-    if (type === 'folder') {
-      await fileOps.copyMoveFolder(from, to, 'move')
+      if (type === 'folder') {
+        await fileOps.copyMoveFolder(from, to, 'move')
+      }
+    } catch (e) {
+      notification.error(`Move ${type} error`, e.message)
+      return
     }
 
     await this.refreshDirectory({type: type === 'file' ? 'moveFile' : 'moveDirectory', targetPath: from, dropPath: to})
   }
 
   async copyOps(from, to, type) {
-    if (type === 'file') {
-      await fileOps.copyMoveFile(from, to, 'copy')
-    }
+    try {
+      if (type === 'file') {
+        await fileOps.copyMoveFile(from, to, 'copy')
+      }
 
-    if (type === 'folder') {
-      await fileOps.copyMoveFolder(from, to, 'copy')
+      if (type === 'folder') {
+        await fileOps.copyMoveFolder(from, to, 'copy')
+      }
+    } catch (e) {
+      notification.error(`Copy ${type} error`, e.message)
+      return
     }
 
     await this.refreshDirectory({type: type === 'file' ? 'copyFile' : 'copyDirectory', targetPath: from, dropPath: to})

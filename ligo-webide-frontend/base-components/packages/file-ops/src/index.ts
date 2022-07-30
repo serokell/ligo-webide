@@ -162,7 +162,7 @@ class FileManager {
     }
 
     if (await this.exists(newPath)) {
-      throw new Error(`File already exists: ${oldPath}.`)
+      throw new Error(`File already exists: "${newPath}".`)
     }
 
     const fileContent = await this.readFile(oldPath)
@@ -175,15 +175,15 @@ class FileManager {
 
   async copyMoveFolder (oldPath: string, newPath: string, mode: 'copy' | 'move') {
     if (!await this.exists(oldPath)) {
-      throw new Error(`No such directory: ${oldPath}.`)
+      throw new Error(`No such directory: "${oldPath}".`)
     }
 
     if (await this.exists(newPath)) {
-      throw new Error(`Directory already exists: ${oldPath}.`)
+      throw new Error(`Directory already exists: "${oldPath}".`)
     }
 
     if (newPath.startsWith(oldPath)) {
-      throw new Error(`${newPath} is subdirectory of ${oldPath}.`)
+      throw new Error(`"${newPath}" is subdirectory of "${oldPath}".`)
     }
 
     await this.writeDirectory(newPath)

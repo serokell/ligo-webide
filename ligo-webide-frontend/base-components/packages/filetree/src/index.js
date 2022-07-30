@@ -213,93 +213,93 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
   }
 
   const refreshDirectory = async (data) => {
-      if (data.type === 'newFile' || data.type === 'newDirectory') {
-          const tempTree = cloneDeep(treeDataRef.current)
-          const newNode = data.type === 'newFile'
+    if (data.type === 'newFile' || data.type === 'newDirectory') {
+      const tempTree = cloneDeep(treeDataRef.current)
+      const newNode = data.type === 'newFile'
               ? { type: 'file', title: data.name, key: data.path, name: data.name, path: data.path, remote: true, isLeaf: true }
               : { type: 'folder', title: data.name, key: data.path, children: [], isLeaf: false, name: data.name, path: data.path, loading: true, remote: true }
-          const parentNode = findInTree(tempTree, (node) => node.path === data.basePath)
+      const parentNode = findInTree(tempTree, (node) => node.path === data.basePath)
 
-          if (parentNode) {
-              parentNode.children.push(newNode)
-              parentNode.children = sortFile(parentNode.children)
-              setTreeData([...tempTree])
+      if (parentNode) {
+        parentNode.children.push(newNode)
+        parentNode.children = sortFile(parentNode.children)
+        setTreeData([...tempTree])
+      }
+    }
+
+    if (data.type === 'renameFile' || data.type === 'renameDirectory') {
+      const tempTree = cloneDeep(treeDataRef.current)
+      const node = findInTree(tempTree, (node) => node.path === data.oldPath)
+      if (node) {
+        node.title = data.newName
+        node.key = data.newPath
+        node.name = data.newName
+        node.path = data.newPath
+      }
+      if (node && data.type === 'renameDirectory') {
+        mapTree(node.children, (nd) => {
+          nd.key = nd.key.replace(data.oldPath, data.newPath)
+          nd.path = nd.path.replace(data.oldPath, data.newPath)
+        })
+      }
+      if (node) {
+        setTreeData([...tempTree])
+        if (data.type === 'renameDirectory') {
+          setExpandKeys(expandKeysRef.current.map(key => key.replace(data.oldPath, data.newPath)))
+        }
+      }
+    }
+
+    if (data.type === 'deleteFile' || data.type === 'deleteDirectory') {
+      const tempTree = cloneDeep(treeDataRef.current)
+      const parentNode = findInTree(tempTree, (node) => node.path === data.path.substring(0, data.path.lastIndexOf('/')))
+      if (parentNode) {
+        parentNode.children = parentNode.children.filter(node => node.path !== data.path)
+        setTreeData([...tempTree])
+
+        if (data.type === 'deleteDirectory') {
+          setExpandKeys(expandKeysRef.current.filter(key => !key.includes(data.path)))
+        }
+      }
+    }
+
+    if (data.type === 'moveFile' || data.type === 'moveDirectory' || data.type === 'copyFile' || data.type === 'copyDirectory') {
+      const tempTree = cloneDeep(treeDataRef.current)
+      const targetNode = cloneDeep(findInTree(tempTree, (node) => node.path === data.targetPath))
+      let newExpandKeys = expandKeysRef.current
+      const parentTargetPath = data.targetPath.substring(0, data.targetPath.lastIndexOf('/'))
+      const parentDropPath = data.dropPath.substring(0, data.dropPath.lastIndexOf('/'))
+
+      if (data.type === 'moveFile' || data.type === 'moveDirectory') {
+        const parentNode = findInTree(tempTree, (node) => node.path === parentTargetPath)
+        if (parentNode) {
+          parentNode.children = parentNode.children.filter(node => node.path !== data.targetPath)
+
+          if (data.type === 'moveDirectory') {
+            newExpandKeys = newExpandKeys.filter(key => !key.includes(data.targetPath))
           }
+        }
       }
 
-      if (data.type === 'renameFile' || data.type === 'renameDirectory') {
-          const tempTree = cloneDeep(treeDataRef.current)
-          const node = findInTree(tempTree, (node) => node.path === data.oldPath)
-          if (node) {
-              node.title = data.newName
-              node.key = data.newPath
-              node.name = data.newName
-              node.path = data.newPath
-          }
-          if (node && data.type === 'renameDirectory') {
-              mapTree(node.children, (nd) => {
-                  nd.key = nd.key.replace(data.oldPath, data.newPath)
-                  nd.path = nd.path.replace(data.oldPath, data.newPath)
-              })
-          }
-          if (node) {
-              setTreeData([...tempTree])
-              if (data.type === 'renameDirectory') {
-                  setExpandKeys(expandKeysRef.current.map(key => key.replace(data.oldPath, data.newPath)))
-              }
-          }
+      if (targetNode) {
+        mapTree([targetNode], (nd) => {
+          nd.key = nd.key.replace(data.targetPath, data.dropPath)
+          nd.path = nd.path.replace(data.targetPath, data.dropPath)
+        })
+
+        newExpandKeys = newExpandKeys.map(key => key.replace(data.targetPath, data.dropPath))
       }
 
-      if (data.type === 'deleteFile' || data.type === 'deleteDirectory') {
-          const tempTree = cloneDeep(treeDataRef.current)
-          const parentNode = findInTree(tempTree, (node) => node.path === data.path.substring(0, data.path.lastIndexOf('/')))
-          if (parentNode) {
-              parentNode.children = parentNode.children.filter(node => node.path !== data.path)
-              setTreeData([...tempTree])
+      const dropNode = findInTree(tempTree, (node) => node.path === parentDropPath)
 
-              if (data.type === 'deleteDirectory') {
-                  setExpandKeys(expandKeysRef.current.filter(key => !key.includes(data.path)))
-              }
-          }
+      if (dropNode) {
+        dropNode.children.push(targetNode)
+        dropNode.children = sortFile(dropNode.children)
       }
 
-      if (data.type === 'moveFile' || data.type === 'moveDirectory' || data.type === 'copyFile' || data.type === 'copyDirectory') {
-          const tempTree = cloneDeep(treeDataRef.current)
-          const targetNode = cloneDeep(findInTree(tempTree, (node) => node.path === data.targetPath))
-          let newExpandKeys = expandKeysRef.current
-          const parentTargetPath = data.targetPath.substring(0, data.targetPath.lastIndexOf('/'))
-          const parentDropPath = data.dropPath.substring(0, data.dropPath.lastIndexOf('/'))
-
-          if (data.type === 'moveFile' || data.type === 'moveDirectory') {
-              const parentNode = findInTree(tempTree, (node) => node.path === parentTargetPath)
-              if (parentNode) {
-                  parentNode.children = parentNode.children.filter(node => node.path !== data.targetPath)
-
-                  if (data.type === 'moveDirectory') {
-                      newExpandKeys = newExpandKeys.filter(key => !key.includes(data.targetPath))
-                  }
-              }
-          }
-
-          if (targetNode) {
-              mapTree([targetNode], (nd) => {
-                  nd.key = nd.key.replace(data.targetPath, data.dropPath)
-                  nd.path = nd.path.replace(data.targetPath, data.dropPath)
-              })
-
-              newExpandKeys = newExpandKeys.map(key => key.replace(data.targetPath, data.dropPath))
-          }
-
-          const dropNode = findInTree(tempTree, (node) => node.path === parentDropPath)
-
-          if (dropNode) {
-              dropNode.children.push(targetNode)
-              dropNode.children = sortFile(dropNode.children)
-          }
-
-          setTreeData([...tempTree])
-          setExpandKeys(newExpandKeys)
-      }
+      setTreeData([...tempTree])
+      setExpandKeys(newExpandKeys)
+    }
   }
 
   const initTree = async () => {
@@ -385,8 +385,8 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
   }
 
   const enableHighLightBlock = (tree, needHighLight) => {
-    let firstNode = undefined;
-    let lastNode = undefined;
+    let firstNode = undefined
+    let lastNode = undefined
     const refreshClassName = (node) => {
       if (!firstNode) {
         firstNode = node
@@ -439,7 +439,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
     if (prevDragEnter && node.path === prevDragEnter.path) {
       return
     }
-    
+
     if (node.path.includes(dragTarget.path)) {
       if (prevDragEnter) {
         const prevN = findInTree(treeData, (treeNode) => treeNode.path === prevDragEnter.path)
@@ -448,7 +448,7 @@ const FileTree = forwardRef(({ projectManager, onSelect, initialPath, contextMen
       setPrevDragEnter(undefined)
       return
     }
-    
+
     setTargetForExpand(null)
 
     const fatherOrSelf = findInTree(treeData, (treeNode) => treeNode.path === (node.type === 'folder' || node.root ? node.path : node.fatherPath))
